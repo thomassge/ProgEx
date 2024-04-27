@@ -37,13 +37,20 @@ public class MainGui {
     void createGridLayout(){
         JPanel flowPanel = new JPanel(new FlowLayout());
         JPanel boxPanel = new JPanel();
+        JButton LogInButton = new JButton("Log In");
         boxPanel.setLayout(new BoxLayout(boxPanel, BoxLayout.Y_AXIS));
 
-        JButton LogInButton = new JButton("Log In");
+
         Dimension logInButtonSize = new Dimension(110, 50);
         LogInButton.setPreferredSize(logInButtonSize);
 
         flowPanel.add(LogInButton);
         mainGuiFrame.add(flowPanel, BorderLayout.SOUTH);
+
+        LogInButton.addActionListener((ActionEvent e) -> {
+            new BookOverviewGui();
+            mainGuiFrame.dispose();
+        });
     }
+
 }
