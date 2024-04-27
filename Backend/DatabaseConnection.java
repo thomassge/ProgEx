@@ -1,5 +1,9 @@
 package Backend;
+import DataStructure.Book;
+
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Date;
 
 
 public class DatabaseConnection {
@@ -9,28 +13,35 @@ public class DatabaseConnection {
     private String password = "12345";
     private Connection conn = null;
 
-    String getAllBooks = "select * from book";
-    String createAccount = "INSERT INTO customer (name, fname, email, password, birthday, address, zip_code, city) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    String getUserName = "SELECT name FROM customer WHERE id = ?";
-    String getUserEmail = "SELECT email FROM customer WHERE id = ?";
-    String getUserPassword = "SELECT password FROM customer WHERE id = ?";
-    String getCustomer = "SELECT * FROM customer WHERE id = ?";
-    String getBooksFromUser = "SELECT * FROM lent_books WHERE customer_id = ?";
-    String getBookTitle = "SELECT * FROM Book WHERE title LIKE '% %' ";
-    String getBookISBN = "SELECT * FROM Book WHERE ISBN = ?";
-    String getBookGenre = "SELECT * FROM Genre WHERE genre = ?";
-    String getBookAuthor = "SELECT * FROM Author WHERE author = ?";
-    String getReleaseDate = "SELECT * FROM Book WHERE release_date > ?";
-    String getAvailableBooks= "SELECT * FROM Book WHERE id NOT IN (SELECT book_id FROM lent_books)";
-    String getBookPerCustomer = "SELECT customer_id, COUNT(*) AS num_lent_books FROM lent_books GROUP BY customer_id";
-    String getQuantityBooks= "SELECT book_id, COUNT(*) AS num_available FROM Book LEFT JOIN lent_books ON Book.id = lent_books.book_id GROUP BY book_id";
+    static String getAllBooks = "select * from book";
+    static String createAccount = "INSERT INTO customer (name, fname, email, password, birthday, address, zip_code, city) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    static  String getUserName = "SELECT name FROM customer WHERE id = ?";
+    static  String getUserEmail = "SELECT email FROM customer WHERE id = ?";
+    static String getUserPassword = "SELECT password FROM customer WHERE id = ?";
+    static String getCustomer = "SELECT * FROM customer WHERE id = ?";
+    static String getBooksFromUser = "SELECT * FROM lent_books WHERE customer_id = ?";
+    static String getBookTitle = "SELECT * FROM Book WHERE title LIKE '% %' ";
+    static String getBookISBN = "SELECT * FROM Book WHERE ISBN = ?";
+    static String getBookGenre = "SELECT * FROM Genre WHERE genre = ?";
+    static String getBookAuthor = "SELECT * FROM Author WHERE author = ?";
+    static String getReleaseDate = "SELECT * FROM Book WHERE release_date > ?";
+    static String getAvailableBooks = "SELECT * FROM Book WHERE id NOT IN (SELECT book_id FROM lent_books)";
+    static String getBookPerCustomer = "SELECT customer_id, COUNT(*) AS num_lent_books FROM lent_books GROUP BY customer_id";
+    //static String getQuantityBooks = "SELECT book_id, SUM(quantity) AS total_quantity FROM qty WHERE book_id = ? GROUP BY book_id";
+    static  String getMostBorrowedBook = "SELECT Book.id, Book.title, COUNT(*) AS num_borrowed FROM Book JOIN lent_books ON Book.id = lent_books.book_id GROUP BY Book.id, Book.title ORDER BY num_borrowed DESC";
+    static String getAllLentBooks = "SELECT * FROM lent_books";
+   // static String getCustomersIdenticalBook = "SELECT Customer.* FROM Customer JOIN lent_books ON Customer.id = lent_books.customer_id WHERE lent_books.book_id = ?";
 
     public static void main(String[] args) {
 
     DatabaseConnection db = new DatabaseConnection();
     System.out.println("Connecting to database..." + db.isConnectionOpen());
+    try {
+        db.executeQuery(Command.GetAllBooks);
+    }catch (SQLException e) {
+        e.printStackTrace();
+    }
 
-    db.executeQuery(Command.GetQuantityBooks);
     }
 
 
@@ -90,7 +101,7 @@ public class DatabaseConnection {
         return false;
     }
 
-    private String GetCommand(Command command){
+    public static String GetCommand(Command command){
         switch (command){
 
             case GetAllBooks: return getAllBooks;
@@ -102,11 +113,17 @@ public class DatabaseConnection {
             case GetBookTitle: return getBookTitle;
             case GetBookISBN: return getBookISBN;
             case GetAvailableBooks: return getAvailableBooks;
-            case GetQuantityBooks: return getQuantityBooks;
         }
         return null;
     }
 
+    public ResultSet executeQuery(Command command) throws SQLException {
+        String sql = GetCommand(command);
+        Statement stmt = conn.createStatement();
+        return stmt.executeQuery(sql);
+    }
+
+/* Veraltet
     public ResultSet executeQuery(Command command) {
 
         if(!isConnectionOpen()){
@@ -114,30 +131,35 @@ public class DatabaseConnection {
         }
 
         String sql = GetCommand(command);
-
         try (Statement stmt = conn.createStatement()) {
             ResultSet rs = stmt.executeQuery(sql);
 
-            while (rs.next()) {
-                System.out.print(rs.getString(1) + " | ");
-                System.out.print(rs.getString(2)+ " | ");
-
-                /*System.out.print(rs.getString(3)+ " | ");
-                System.out.print(rs.getString(4)+ " | ");
-                System.out.print(rs.getString(5)+ " | ");
-                System.out.print(rs.getString(6)+ " | ");
-                System.out.print(rs.getString(7)+ " | ");
-                System.out.print(rs.getString(8)+ " | ");
-                System.out.print("\n");
-                */
-                 
-            }
-
-            return rs;
+            printAllColumns(rs);
+return rs;
         } catch (SQLException e) {
             System.out.println("SQL-Error: ");
             e.printStackTrace();
         }
+
         return null;
+    }
+*/
+
+    public void printAllColumns(ResultSet rs) {
+        try {
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            while (rs.next()) {
+                for (int i = 1; i <= columnCount; i++) {
+                    String columnName = metaData.getColumnName(i);
+                    String value = rs.getString(i) + " | ";
+                    System.out.println(columnName + ": " + value);
+                }
+                System.out.println("-------------------");
+            }
+        } catch (SQLException e) {
+
+        }
     }
 }

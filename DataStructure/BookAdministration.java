@@ -7,6 +7,9 @@ public class BookAdministration {
 
     List<Book> books = new ArrayList<Book>();
 
+    public void SetBooks(List<Book> books) {
+        this.books = books;
+    }
 
     public void AddBook(Book book){
         books.add(book);
@@ -18,6 +21,14 @@ public class BookAdministration {
 
     public void ClearBooks(){
         books.clear();
+    }
+
+    public void DisplayBooksInConsole(){
+        System.out.println("Books:");
+        System.out.println(books.size());
+        for(Book book : books){
+            System.out.println(book.toString());
+        }
     }
 
 

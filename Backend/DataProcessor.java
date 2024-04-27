@@ -14,22 +14,20 @@ public DataProcessor() {
     dbConn = new DatabaseConnection();
 }
 
-    public ArrayList<Book> processBooks(ResultSet rs) {
+// Richtige weise um zu verarbeiten
+    public ArrayList<Book> processBooks(ResultSet rs) throws SQLException {
+
         ArrayList<Book> books = new ArrayList<>();
-        try {
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String title = rs.getString("title");
-                String author = rs.getString("author");
-                String isbn = rs.getString("isbn");
-                Date releaseDate = rs.getDate("release_date");
-                String publisher = rs.getString("publisher");
-                String genre = rs.getString("genre");
-                String description = rs.getString("description");
-                books.add(new Book(id, title, author, isbn, releaseDate, publisher, genre, description));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            String title = rs.getString("title");
+            String author = rs.getString("author");
+            String isbn = rs.getString("isbn");
+            Date releaseDate = rs.getDate("release_date");
+            String publisher = rs.getString("publisher");
+            String genre = rs.getString("genre");
+            String description = rs.getString("description");
+            books.add(new Book(id, title, author, isbn, releaseDate, publisher, genre, description));
         }
         return books;
     }
