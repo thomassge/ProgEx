@@ -1,5 +1,7 @@
 package Frontend;
 
+import DataStructure.Book;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -9,22 +11,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 public class BookOverviewGui implements ActionListener {
 
     private JFrame bookOverviewFrame;
-    private final String[] columnNames = {"ID", "Title", "Author", "Genre", "Quantity", "Price"};
+    private final String[] columnNames = {"ID", "Title", "Author", "Genre", "Quantity"};
     private final int[] columnWidth = {-100, 50, 50, 50, -100, -80};
-    private Object[][] bookMenuData = {
-            {1, "Mein Tagebuch", "Angela Merkel", "langweilig", 99, 19.99},
-            {2, "To Kill a Mockingbird", "Harper Lee", "Fiction", 50, 10.99},
-            {3, "1984", "George Orwell", "Fiction", 80, 12.99}
-    };
+    private Object[][] bookMenuData;
     private JMenuBar bookOverviewMenuBar;
     private JTable bookOverviewTable;
     private JTextField searchField;
+    private final ArrayList<Book> books;
 
-    public BookOverviewGui() {
+    public BookOverviewGui(ArrayList <Book> books) {
+        this.books = books;
+        initializeBookOverviewData(books);
         createFrame();
         createMenuBar();
         createTable();
@@ -35,6 +37,18 @@ public class BookOverviewGui implements ActionListener {
         bookOverviewFrame.add(bookOverviewScrollPane);
     }
 
+    private void initializeBookOverviewData(ArrayList<Book> books){
+
+        bookMenuData = new Object[books.getLast().getId()-1][columnNames.length];
+
+        for (int selectedBook = 0; selectedBook < books.getLast().getId()-1; selectedBook++) {
+            bookMenuData[selectedBook][0] = books.get(selectedBook).getId();
+            bookMenuData[selectedBook][1] = books.get(selectedBook).getTitle();
+            bookMenuData[selectedBook][2] = books.get(selectedBook).getAuthor();
+            bookMenuData[selectedBook][3] = books.get(selectedBook).getGenre();
+            bookMenuData[selectedBook][4] = books.get(selectedBook).getQty();
+        }
+    }
     private void createFrame() {
         bookOverviewFrame = new JFrame("Book Overview");
         bookOverviewFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -96,7 +110,7 @@ public class BookOverviewGui implements ActionListener {
                     int row = target.getSelectedRow();
                     int id = Integer.parseInt(target.getModel().getValueAt(row, 0).toString());
                     if (row != -1) {
-                        new DetailedBookView(id);
+                        //new DetailedBookView(books, id);
                     }
                 }
             }

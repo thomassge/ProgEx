@@ -1,17 +1,24 @@
+/*
+
 package Frontend;
+
+import DataStructure.Book;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class DetailedBookView implements ActionListener {
     private JFrame DetailedBookView;
     private JMenuBar DetailedBookMenuBar;
     private String[] rowNames = {"ID", "Title", "Author", "ISBN", "Release date", "Publisher", "Genre", "Description", "Qty"};
+    private ArrayList<Book> books;
 
-    public DetailedBookView(int id) {
+    public DetailedBookView(ArrayList<Book> books, int id) {
+        this.books = books;
         createDetailedBookTableFrame();
         createDetailedBookTableMenuBar();
         createDetailedBookTable();
@@ -63,3 +70,5 @@ public class DetailedBookView implements ActionListener {
     }
 
 }
+
+ */

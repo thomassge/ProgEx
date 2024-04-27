@@ -1,15 +1,21 @@
 package Frontend;
 
+import Backend.DatabaseConnection;
+import DataStructure.Book;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class MainGui {
 
     private JFrame mainGuiFrame = new JFrame();
+    private ArrayList<Book> books;
 
     public MainGui() {
+        DatabaseConnection db = new DatabaseConnection();
         createFrame();
         //createBackground();
         createGridLayout();
@@ -48,7 +54,7 @@ public class MainGui {
         mainGuiFrame.add(flowPanel, BorderLayout.SOUTH);
 
         LogInButton.addActionListener((ActionEvent e) -> {
-            new BookOverviewGui();
+            new BookOverviewGui(books);
             mainGuiFrame.dispose();
         });
     }
