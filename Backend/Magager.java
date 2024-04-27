@@ -1,9 +1,11 @@
 package Backend;
 
+import DataStructure.Book;
 import DataStructure.BookAdministration;
 import DataStructure.Customer;
-
+import java.util.ArrayList;
 import java.sql.SQLException;
+import java.util.List;
 
 public class Magager {
 
@@ -38,6 +40,8 @@ public class Magager {
        bookAdministration.SetBooks(processor.processBooks(dbConn.executeQuery(DatabaseConnection.Command.GetAllBooks)));
     }
 
-
+public ArrayList<Book> GetBooks(){
+        return bookAdministration.getBooks();
+}
 
 }

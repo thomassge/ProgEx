@@ -5,9 +5,14 @@ import java.util.List;
 
 public class BookAdministration {
 
-    List<Book> books = new ArrayList<Book>();
+    ArrayList<Book> books = new ArrayList<Book>();
 
-    public void SetBooks(List<Book> books) {
+
+    public ArrayList<Book> getBooks() {
+        return books;
+    }
+
+    public void SetBooks(ArrayList<Book> books) {
         this.books = books;
     }
 

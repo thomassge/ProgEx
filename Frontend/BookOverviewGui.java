@@ -17,7 +17,7 @@ public class BookOverviewGui implements ActionListener {
 
     private JFrame bookOverviewFrame;
     private final String[] columnNames = {"ID", "Title", "Author", "Genre", "Quantity"};
-    private final int[] columnWidth = {-100, 50, 50, 50, -100, -80};
+    private final int[] columnWidth = {-100, 50, 50, 50, -100,};
     private Object[][] bookMenuData;
     private JMenuBar bookOverviewMenuBar;
     private JTable bookOverviewTable;

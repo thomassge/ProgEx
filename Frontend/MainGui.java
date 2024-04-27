@@ -1,24 +1,33 @@
 package Frontend;
 
 import Backend.DatabaseConnection;
+import Backend.Magager;
 import DataStructure.Book;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class MainGui {
 
     private JFrame mainGuiFrame = new JFrame();
-    private ArrayList<Book> books;
+    private ArrayList<Book> books = new ArrayList<Book>();
 
     public MainGui() {
-        DatabaseConnection db = new DatabaseConnection();
+
         createFrame();
         //createBackground();
         createGridLayout();
+
+        Magager manager = new Magager();
+        try{
+            manager.LoadBooks();
+        }catch (SQLException e){}
+        this.books = manager.GetBooks();
+
     }
 
     void createFrame(){
