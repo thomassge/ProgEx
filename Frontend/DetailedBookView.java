@@ -1,74 +1,85 @@
-/*
-
 package Frontend;
 
 import DataStructure.Book;
 
 import javax.swing.*;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 public class DetailedBookView implements ActionListener {
-    private JFrame DetailedBookView;
-    private JMenuBar DetailedBookMenuBar;
-    private String[] rowNames = {"ID", "Title", "Author", "ISBN", "Release date", "Publisher", "Genre", "Description", "Qty"};
-    private ArrayList<Book> books;
+    private JFrame detailedBookView;
+    private final String[] rowNames = {"ID", "Title", "Author", "ISBN", "Release date", "Publisher", "Genre", "Description", "Qty"};
+    private Object [][] detailedBookViewData;
 
-    public DetailedBookView(ArrayList<Book> books, int id) {
-        this.books = books;
+    public DetailedBookView(Book selectedBook) {
+        initializeDetailedBookViewData(selectedBook);
         createDetailedBookTableFrame();
-        createDetailedBookTableMenuBar();
         createDetailedBookTable();
+        createDetailedBookTableMenuBar();
     }
 
+    private void initializeDetailedBookViewData(Book selectedBook) {
+        detailedBookViewData = new Object[rowNames.length][2];
+
+        detailedBookViewData[0][0] = selectedBook.getId();
+        detailedBookViewData[1][0] = selectedBook.getTitle();
+        detailedBookViewData[2][0] = selectedBook.getAuthor();
+        detailedBookViewData[3][0] = selectedBook.getIsbn();
+        detailedBookViewData[4][0] = selectedBook.getReleaseDate();
+        detailedBookViewData[5][0] = selectedBook.getPublisher();
+        detailedBookViewData[6][0] = selectedBook.getGenre();
+        detailedBookViewData[7][0] = selectedBook.getDescription();
+        detailedBookViewData[8][0] = selectedBook.getQty();
+    }
     private void createDetailedBookTableFrame() {
-        DetailedBookView = new JFrame("Detailed Book");
-        DetailedBookView.setSize(800, 600);
-        DetailedBookView.setLocationRelativeTo(null);
-        DetailedBookView.setVisible(true);
+        detailedBookView = new JFrame("Detailed Book");
+        detailedBookView.setSize(800, 300);
+        detailedBookView.setLocationRelativeTo(null);
+        detailedBookView.setVisible(true);
     }
 
     private void createDetailedBookTableMenuBar() {
-        DetailedBookMenuBar = new JMenuBar();
-        JMenu menu = new JMenu("Detailed Book View");
-        addItemToMenuWithActionCommand(menu, "Back", "back");
-        DetailedBookMenuBar.add(menu);
+        JMenuBar detailedBookMenuBar = new JMenuBar();
+        JMenu menu = new JMenu("Menu");
+        addItemToMenuWithActionCommand(menu);
+        detailedBookMenuBar.add(menu);
+        detailedBookView.setJMenuBar(detailedBookMenuBar);
     }
 
-    private void addItemToMenuWithActionCommand(JMenu menu, String itemName, String actionCmd) {
-        JMenuItem detailedBookItem = new JMenuItem(itemName);
-        detailedBookItem.setActionCommand(actionCmd);
+    private void addItemToMenuWithActionCommand(JMenu menu) {
+        JMenuItem detailedBookItem = new JMenuItem("Back");
+        detailedBookItem.setActionCommand("back");
         detailedBookItem.addActionListener( this);
         menu.add(detailedBookItem);
     }
 
     public void actionPerformed(ActionEvent e) {
-        if ("Back".equals(e.getActionCommand())) {
-            DetailedBookView.dispose();
+        if (e.getSource() instanceof JMenuItem) {
+            JMenuItem source = (JMenuItem) e.getSource();
+            if ("Back".equals(source.getText())) {
+                detailedBookView.dispose();
+            }
         }
     }
 
     private void createDetailedBookTable() {
-        detailedBookTable = new JTable(rowNames, bookData) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
+        JPanel panel = new JPanel(new BorderLayout());
 
-        TableColumnModel columnModel = bookOverviewTable.getColumnModel();
-
-        for (int selectedColumn = 0; selectedColumn < columnWidth.length; selectedColumn++) {
-            TableColumn column = columnModel.getColumn(selectedColumn);
-            column.setPreferredWidth((column.getPreferredWidth() + columnWidth[selectedColumn]));
+        JTable defaultBookAttributes = new JTable(new DefaultTableModel(rowNames.length, 1));
+        DefaultTableModel tableModel = (DefaultTableModel) defaultBookAttributes.getModel();
+        for(int i = 0; i< rowNames.length;i++){
+            tableModel.setValueAt(rowNames[i], i, 0);
         }
-        addMouseListener();
 
+        JTable selectedBookValues = new JTable(detailedBookViewData, new String[]{"Value"});
+        selectedBookValues.setEnabled(false);
+        selectedBookValues.setTableHeader(null);
+
+        panel.add(defaultBookAttributes, BorderLayout.WEST);
+        panel.add(selectedBookValues, BorderLayout.CENTER);
+
+        detailedBookView.add(panel);
     }
-
 }
-
- */

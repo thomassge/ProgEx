@@ -11,7 +11,7 @@ public class Book {
     String isbn;
     String genre;
     String description;
-    Date release_date;
+    Date releaseDate;
     int qty;
 
     public Book(int id, String title, String author, String isbn, Date releaseDate, String publisher, String genre, String description) {
@@ -19,7 +19,7 @@ public class Book {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
-        this.release_date = releaseDate;
+        this.releaseDate = releaseDate;
         this.publisher = publisher;
         this.genre = genre;
         this.description = description;
@@ -81,12 +81,12 @@ public class Book {
         this.description = description;
     }
 
-    public Date getRelease_date() {
-        return release_date;
+    public Date getReleaseDate() {
+        return releaseDate;
     }
 
-    public void setRelease_date(Date release_date) {
-        this.release_date = release_date;
+    public void setReleaseDate(Date releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
     public int getQty() {
@@ -107,7 +107,7 @@ public class Book {
                 ", isbn='" + isbn + '\'' +
                 ", genre='" + genre + '\'' +
                 ", description='" + description + '\'' +
-                ", release_date=" + release_date +
+                ", release_date=" + releaseDate +
                 ", qty=" + qty +
                 '}';
     }

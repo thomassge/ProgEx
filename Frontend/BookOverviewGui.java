@@ -1,6 +1,7 @@
 package Frontend;
 
 import DataStructure.Book;
+import DataStructure.Orders;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -12,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BookOverviewGui implements ActionListener {
 
@@ -23,14 +25,15 @@ public class BookOverviewGui implements ActionListener {
     private JTable bookOverviewTable;
     private JTextField searchField;
     private final ArrayList<Book> books;
+    private List<Orders> orders;
 
     public BookOverviewGui(ArrayList <Book> books) {
         this.books = books;
         initializeBookOverviewData(books);
-        createFrame();
-        createMenuBar();
-        createTable();
-        createSearchBar();
+        createBookOverviewFrame();
+        createBookOverviewMenuBar();
+        createBookOverviewTable();
+        createBookOverviewSearchBar();
 
         JScrollPane bookOverviewScrollPane = new JScrollPane(bookOverviewTable);
         bookOverviewFrame.setJMenuBar(bookOverviewMenuBar);
@@ -39,9 +42,9 @@ public class BookOverviewGui implements ActionListener {
 
     private void initializeBookOverviewData(ArrayList<Book> books){
 
-        bookMenuData = new Object[books.getLast().getId()-1][columnNames.length];
+        bookMenuData = new Object[books.getLast().getId()][columnNames.length];
 
-        for (int selectedBook = 0; selectedBook < books.getLast().getId()-1; selectedBook++) {
+        for (int selectedBook = 0; selectedBook < books.getLast().getId(); selectedBook++) {
             bookMenuData[selectedBook][0] = books.get(selectedBook).getId();
             bookMenuData[selectedBook][1] = books.get(selectedBook).getTitle();
             bookMenuData[selectedBook][2] = books.get(selectedBook).getAuthor();
@@ -49,7 +52,7 @@ public class BookOverviewGui implements ActionListener {
             bookMenuData[selectedBook][4] = books.get(selectedBook).getQty();
         }
     }
-    private void createFrame() {
+    private void createBookOverviewFrame() {
         bookOverviewFrame = new JFrame("Book Overview");
         bookOverviewFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         bookOverviewFrame.setSize(800, 600);
@@ -60,7 +63,7 @@ public class BookOverviewGui implements ActionListener {
         bookOverviewFrame.add(bookOverviewScrollPane);
     }
 
-    private void createMenuBar() {
+    private void createBookOverviewMenuBar() {
         bookOverviewMenuBar = new JMenuBar();
         JMenu menu = new JMenu("Overview");
         bookOverviewMenuBar.add(menu);
@@ -77,13 +80,13 @@ public class BookOverviewGui implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if ("Account".equals(e.getActionCommand())) {
-            new AccountGui();
+            //new AccountGui();
         } else if ("Personal Books".equals(e.getActionCommand())) {
-            new PersonalBooksGui();
+            //new PersonalBooksGui(orders, books);
         }
     }
 
-    private void createTable() {
+    private void createBookOverviewTable() {
         bookOverviewTable = new JTable(bookMenuData, columnNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -97,8 +100,8 @@ public class BookOverviewGui implements ActionListener {
             TableColumn column = columnModel.getColumn(selectedColumn);
             column.setPreferredWidth((column.getPreferredWidth() + columnWidth[selectedColumn]));
         }
-        addMouseListener();
 
+        addMouseListener();
     }
 
     private void addMouseListener(){
@@ -110,14 +113,15 @@ public class BookOverviewGui implements ActionListener {
                     int row = target.getSelectedRow();
                     int id = Integer.parseInt(target.getModel().getValueAt(row, 0).toString());
                     if (row != -1) {
-                        //new DetailedBookView(books, id);
+                        Book selectedBook = books.get(row);
+                        new DetailedBookView(selectedBook);
                     }
                 }
             }
         });
     }
 
-    private void createSearchBar() {
+    private void createBookOverviewSearchBar() {
         JPanel panel = new JPanel();
         createSearchField();
         panel.add(searchField);
