@@ -26,6 +26,7 @@ public class BookOverviewGui implements ActionListener {
     private JTextField searchField;
     private final ArrayList<Book> books;
     private List<Orders> orders;
+//    private DataStructure.Customer user;
 
     public BookOverviewGui(ArrayList <Book> books) {
         this.books = books;
@@ -80,7 +81,7 @@ public class BookOverviewGui implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if ("Account".equals(e.getActionCommand())) {
-            //new AccountGui();
+            //new AccountGui(user);
         } else if ("Personal Books".equals(e.getActionCommand())) {
             //new PersonalBooksGui(orders, books);
         }

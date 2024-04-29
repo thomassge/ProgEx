@@ -3,16 +3,19 @@ package Frontend;
 import Backend.Magager;
 import DataStructure.Book;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class MainGui {
 
     private JFrame mainGuiFrame = new JFrame();
-    private ArrayList<Book> books = new ArrayList<Book>();
+    private ArrayList<Book> books;
 
     public MainGui() {
 
@@ -32,15 +35,23 @@ public class MainGui {
         mainGuiFrame.setSize(800, 600);
         mainGuiFrame.setLocationRelativeTo(null);
 
-        ImageIcon backgroundImageIcon = new ImageIcon("background.png");
-        JLabel backgroundLabel = new JLabel(backgroundImageIcon);
-        mainGuiFrame.setContentPane(backgroundLabel);
-        System.out.println("TEST");
+        BufferedImage backgroundImage = null;
+        try {
+            backgroundImage = ImageIO.read(getClass().getResource("/Frontend/background.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (backgroundImage != null) {
+            JLabel backgroundLabel = new JLabel(new ImageIcon(backgroundImage));
+            backgroundLabel.setPreferredSize(new Dimension(800, 600));
+            mainGuiFrame.setContentPane(backgroundLabel);
+        }
 
         mainGuiFrame.setLayout(new BorderLayout());
-
         mainGuiFrame.setVisible(true);
     }
+
 
     private void createMainGuiLayout(){
         JPanel flowPanel = new JPanel(new FlowLayout());
