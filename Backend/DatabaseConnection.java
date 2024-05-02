@@ -15,6 +15,7 @@ public class DatabaseConnection {
 
     static String getAllBooks = "select * from book";
     static String createAccount = "INSERT INTO customer (name, fname, email, password, birthday, address, zip_code, city) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    static String deleteAccount = "DELETE FROM customer WHERE email = ? AND password = ?";
     static  String getUserName = "SELECT name FROM customer WHERE id = ?";
     static  String getUserEmail = "SELECT email FROM customer WHERE id = ?";
     static String getUserPassword = "SELECT password FROM customer WHERE id = ?";
@@ -27,7 +28,7 @@ public class DatabaseConnection {
     static String getReleaseDate = "SELECT * FROM Book WHERE release_date > ?";
     static String getAvailableBooks = "SELECT * FROM Book WHERE id NOT IN (SELECT book_id FROM lent_books)";
     static String getBookPerCustomer = "SELECT customer_id, COUNT(*) AS num_lent_books FROM lent_books GROUP BY customer_id";
-    //static String getQuantityBooks = "SELECT book_id, SUM(quantity) AS total_quantity FROM qty WHERE book_id = ? GROUP BY book_id";
+    static String getQuantityBooks = "SELECT * FROM qty";
     static  String getMostBorrowedBook = "SELECT Book.id, Book.title, COUNT(*) AS num_borrowed FROM Book JOIN lent_books ON Book.id = lent_books.book_id GROUP BY Book.id, Book.title ORDER BY num_borrowed DESC";
     static String getAllLentBooks = "SELECT * FROM lent_books";
    // static String getCustomersIdenticalBook = "SELECT Customer.* FROM Customer JOIN lent_books ON Customer.id = lent_books.customer_id WHERE lent_books.book_id = ?";
@@ -36,17 +37,17 @@ public class DatabaseConnection {
 
     DatabaseConnection db = new DatabaseConnection();
     System.out.println("Connecting to database..." + db.isConnectionOpen());
-    try {
-        db.executeQuery(Command.GetAllBooks);
+  try {
+      //  db.executeQuery(Command.GetQuantityBooks);
+      db.executeQueryPrepared(db.PrepareWith1Int(GetCommand(Command.GetBooksFromUser),2));
     }catch (SQLException e) {
         e.printStackTrace();
     }
-
     }
-
-
     public enum Command{
         GetAllBooks,
+        CreateAccount,
+        DeleteAccount,
         GetUserName,
         GetUserEmail,
         GetUserPassword,
@@ -105,6 +106,8 @@ public class DatabaseConnection {
         switch (command){
 
             case GetAllBooks: return getAllBooks;
+            case CreateAccount: return createAccount;
+            case DeleteAccount: return deleteAccount;
             case GetUserName: return getUserName;
             case GetUserEmail: return getUserEmail;
             case GetUserPassword: return getUserPassword;
@@ -113,6 +116,7 @@ public class DatabaseConnection {
             case GetBookTitle: return getBookTitle;
             case GetBookISBN: return getBookISBN;
             case GetAvailableBooks: return getAvailableBooks;
+            case GetQuantityBooks: return getQuantityBooks;
         }
         return null;
     }
@@ -120,7 +124,40 @@ public class DatabaseConnection {
     public ResultSet executeQuery(Command command) throws SQLException {
         String sql = GetCommand(command);
         Statement stmt = conn.createStatement();
+        printAllColumns(stmt.executeQuery(sql));
         return stmt.executeQuery(sql);
+    }
+
+    public ResultSet executeQueryPrepared(PreparedStatement stmt) throws SQLException {
+        printAllColumns(stmt.executeQuery());
+        return stmt.executeQuery();
+    }
+
+
+    public PreparedStatement PrepareWith1Int(String sql, int i) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setInt(1, i);
+        return pstmt;
+    }
+
+    public PreparedStatement PrepareCreateAcoount(String sql, String userName, String userFname, String userEmail, String password, String birthday, String address, String zipCode, String city) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, userName);
+        pstmt.setString(2, userFname);
+        pstmt.setString(3, userEmail);
+        pstmt.setString(4, password);
+        pstmt.setString(5, birthday);
+        pstmt.setString(6, address);
+        pstmt.setString(7, zipCode);
+        pstmt.setString(8, city);
+        return pstmt;
+    }
+
+    public PreparedStatement PrepareDeleteAccount(String sql, String userEmail, String password) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, userEmail);
+        pstmt.setString(2, password);
+        return pstmt;
     }
 
 /* Veraltet
@@ -145,8 +182,8 @@ return rs;
     }
 */
 
-    public void printAllColumns(ResultSet rs) {
-        try {
+    public void printAllColumns(ResultSet rs) throws SQLException {
+
             ResultSetMetaData metaData = rs.getMetaData();
             int columnCount = metaData.getColumnCount();
 
@@ -158,8 +195,5 @@ return rs;
                 }
                 System.out.println("-------------------");
             }
-        } catch (SQLException e) {
-
-        }
     }
 }

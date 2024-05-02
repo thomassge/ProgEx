@@ -12,6 +12,15 @@ public class BookAdministration {
         return books;
     }
 
+    public Book GetBookById(int id){
+        for(Book book : books){
+            if(book.getId() == id){
+                return book;
+            }
+        }
+        return null;
+    }
+
     public void SetBooks(ArrayList<Book> books) {
         this.books = books;
     }

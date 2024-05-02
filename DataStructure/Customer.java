@@ -1,5 +1,6 @@
 package DataStructure;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 public class Customer {
@@ -12,7 +13,7 @@ Date birthday;
 String address;
 String zip_code;
 String city;
-List<Orders> orders;
+ArrayList<Orders> orders;
 
     public Customer(int id, String name, String fname, String email, String password, Date birthday, String address, String zipCode, String city) {
         this.id = id;
@@ -91,11 +92,12 @@ List<Orders> orders;
         this.city = city;
     }
 
-    public List<Orders> getOrders() {
+    public ArrayList<Orders> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<Orders> orders) {
+    public void setOrders(ArrayList<Orders> orders) {
         this.orders = orders;
+
     }
 }

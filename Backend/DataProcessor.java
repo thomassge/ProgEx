@@ -32,10 +32,21 @@ public DataProcessor() {
         return books;
     }
 
+    public ArrayList<Orders> ProccesUserOrders(ResultSet rs) throws SQLException{
+    ArrayList<Orders> orders = new ArrayList<Orders>();
 
-        public Customer processCustomer(ResultSet rs) {
+    while (rs.next()){
+        Orders order = new Orders();
+
+    }
+
+return null;
+    }
+
+
+        public Customer processCustomer(ResultSet rs) throws SQLException{
             Customer customer = null;
-            try {
+
                 if (rs.next()) {
                     int id = rs.getInt("id");
                     String name = rs.getString("name");
@@ -49,36 +60,22 @@ public DataProcessor() {
 
                     customer = new Customer(id, name, fname, email, password, birthday, address, zipCode, city);
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
             return customer;
         }
 
-        public String processUserEmail(ResultSet rs){
-            try{
+        public String processUserEmail(ResultSet rs) throws SQLException {
                 if(rs.next()){
 
                   return rs.getString("email");
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
             return null;
         }
 
-    public String processUserPassword(ResultSet rs){
-        try{
+    public String processUserPassword(ResultSet rs) throws SQLException{
             if(rs.next()){
-
                 return rs.getString("password");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         return null;
     }
-
-
 
 }

@@ -3,6 +3,8 @@ package Backend;
 import DataStructure.Book;
 import DataStructure.BookAdministration;
 import DataStructure.Customer;
+import DataStructure.Orders;
+
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.util.List;
@@ -40,8 +42,43 @@ public class Magager {
        bookAdministration.SetBooks(processor.processBooks(dbConn.executeQuery(DatabaseConnection.Command.GetAllBooks)));
     }
 
+    public void LoadPersonalBooks(){
+        int id = user.getId();
+
+        List<Orders> orders;
+
+
+
+    }
+
+
+    public void LoadBookIds() throws SQLException{  //Annika
+        ArrayList<Book> books = GetBooks();
+        ArrayList<Integer> bookIds = new ArrayList<Integer>();
+
+        for(int id : bookIds){
+
+            for(Book book : books){
+                if(book.getId() == id){
+                  //  book.setQty();
+                }
+
+            }
+        }
+    }
+
+
+
+
 public ArrayList<Book> GetBooks(){
         return bookAdministration.getBooks();
 }
-
+/*
+    public ArrayList<Book> GetBookIds(){    //Annika
+      //  return bookAdministration.getBookIds();
+    }
+*/
 }
+
+
+
