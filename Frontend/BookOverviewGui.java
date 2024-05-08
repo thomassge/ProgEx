@@ -42,10 +42,13 @@ public class BookOverviewGui implements ActionListener {
     }
 
     private void initializeBookOverviewData(ArrayList<Book> books){
+        if (books == null) {
+            books = new ArrayList<>();
+        }
 
-        bookMenuData = new Object[books.getLast().getId()][columnNames.length];
+        bookMenuData = new Object[books.size()][columnNames.length];
 
-        for (int selectedBook = 0; selectedBook < books.getLast().getId(); selectedBook++) {
+        for (int selectedBook = 0; selectedBook < books.size(); selectedBook++) {
             bookMenuData[selectedBook][0] = books.get(selectedBook).getId();
             bookMenuData[selectedBook][1] = books.get(selectedBook).getTitle();
             bookMenuData[selectedBook][2] = books.get(selectedBook).getAuthor();
@@ -83,7 +86,7 @@ public class BookOverviewGui implements ActionListener {
         if ("Account".equals(e.getActionCommand())) {
             //new AccountGui(user);
         } else if ("Personal Books".equals(e.getActionCommand())) {
-            //new PersonalBooksGui(orders, books);
+            new PersonalBooksGui(orders, books);
         }
     }
 

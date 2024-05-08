@@ -1,10 +1,28 @@
 package Backend;
 import DataStructure.Customer;
+
+import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
 public class LoginBackend {
+
+    public static boolean checkLogin(String userMail, String userPassword) {
+        DatabaseConnection db = new DatabaseConnection();
+        try {
+            PreparedStatement stmt = db.PrepareGetCustomerByEmailAndPassword(db.getCustomerByEmailAndPassword, userMail, userPassword);
+            ResultSet rs = db.executeQueryPrepared(stmt);
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static boolean checkLogin(Customer user, String userMail, String userPassword) {
         return user.geteMail().equals(userMail) && user.getPassword().equals(userPassword);
     }

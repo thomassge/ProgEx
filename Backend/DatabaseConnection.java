@@ -13,6 +13,7 @@ public class DatabaseConnection {
     private String password = "12345";
     private Connection conn = null;
 
+    static String getCustomerByEmailAndPassword = "SELECT * FROM customer WHERE email = ? AND password = ?";
     static String getAllBooks = "select * from book";
     static String createAccount = "INSERT INTO customer (name, fname, email, password, birthday, address, zip_code, city) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     static String deleteAccount = "DELETE FROM customer WHERE email = ? AND password = ?";
@@ -44,6 +45,14 @@ public class DatabaseConnection {
         e.printStackTrace();
     }
     }
+
+    public PreparedStatement PrepareGetCustomerByEmailAndPassword(String sql, String userEmail, String userPassword) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, userEmail);
+        pstmt.setString(2, userPassword);
+        return pstmt;
+    }
+
     public enum Command{
         GetAllBooks,
         CreateAccount,
