@@ -1,7 +1,7 @@
 package Frontend;
 
 import Backend.LoginBackend;
-import Backend.Magager;
+import Backend.Manager;
 import DataStructure.Book;
 import DataStructure.Customer;
 
@@ -22,16 +22,13 @@ public class MainGui {
     private Customer loggedInUser;
 
     public MainGui() {
-        Magager manager = new Magager();
-        try {
-            manager.LoadBooks();
-            books = manager.GetBooks();
+
+
+
+            books = Manager.GetBooks();
             createMainGuiFrame();
             createMainGuiLayout();
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Error starting the application: " + e.getMessage());
-        }
+
     }
 
     private void createMainGuiFrame() {
@@ -188,7 +185,7 @@ public class MainGui {
                 String address = addressTextField.getText();
                 String zipCode = zipCodeTextField.getText();
                 String city = cityTextField.getText();
-                LoginBackend.createAccount(loggedInUser, name, fname, email, password, birthday, address, zipCode, city);
+                LoginBackend.createAccount( name, fname, email, password, birthday, address, zipCode, city);
                 frame.dispose();
             }
         });
@@ -227,7 +224,7 @@ public class MainGui {
                 break;
             case "delete":
                 if(LoginBackend.checkLogin(email, password)) {
-                    LoginBackend.deleteAccount(loggedInUser, email, password);
+                    LoginBackend.deleteAccount(email, password);
                     deleteFrame.dispose();
                 } else {
                     JOptionPane.showMessageDialog(null, "Delete failed. Please check your credentials and try again.", "Delete Failed", JOptionPane.ERROR_MESSAGE);

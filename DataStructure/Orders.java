@@ -9,6 +9,9 @@ Date orderdate;
 Date returndate;
 
     public Book getBook() {
+
+
+
         return book;
     }
 
@@ -31,4 +34,9 @@ Date returndate;
     public void setReturndate(Date returndate) {
         this.returndate = returndate;
     }
+
+    public void WriteOrderInConsole() {
+    System.out.println("book: " + book.id + " " + book.title + " lending: " + orderdate + " return: " + returndate);
+    }
+
 }

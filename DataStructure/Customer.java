@@ -108,4 +108,10 @@ ArrayList<Orders> orders;
         this.orders = orders;
 
     }
+    public void PrintPersonalBooks(){
+      for(Orders o : orders){
+         o.WriteOrderInConsole();
+      }
+    }
+
 }

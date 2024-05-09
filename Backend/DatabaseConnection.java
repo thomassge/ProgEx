@@ -1,5 +1,6 @@
 package Backend;
 import DataStructure.Book;
+import DataStructure.Orders;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,9 +15,10 @@ public class DatabaseConnection {
     private Connection conn = null;
 
     static String getCustomerByEmailAndPassword = "SELECT * FROM customer WHERE email = ? AND password = ?";
-    static String getAllBooks = "select * from book";
+    static String getAllBooks = "SELECT book.*, qty.qty FROM book, qty WHERE book.id = qty.book_id;";       //Annika
     static String createAccount = "INSERT INTO customer (name, fname, email, password, birthday, address, zip_code, city) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     static String deleteAccount = "DELETE FROM customer WHERE email = ? AND password = ?";
+    static String editAccount = "UPDATE customer SET name = ?, fname = ?, email = ?, password = ?, birthday = ?, address = ?, zip_code = ?, city = ? WHERE email = ?";
     static  String getUserName = "SELECT name FROM customer WHERE id = ?";
     static  String getUserEmail = "SELECT email FROM customer WHERE id = ?";
     static String getUserPassword = "SELECT password FROM customer WHERE id = ?";
@@ -34,17 +36,7 @@ public class DatabaseConnection {
     static String getAllLentBooks = "SELECT * FROM lent_books";
    // static String getCustomersIdenticalBook = "SELECT Customer.* FROM Customer JOIN lent_books ON Customer.id = lent_books.customer_id WHERE lent_books.book_id = ?";
 
-    public static void main(String[] args) {
 
-    DatabaseConnection db = new DatabaseConnection();
-    System.out.println("Connecting to database..." + db.isConnectionOpen());
-  try {
-      //  db.executeQuery(Command.GetQuantityBooks);
-      db.executeQueryPrepared(db.PrepareWith1Int(GetCommand(Command.GetBooksFromUser),2));
-    }catch (SQLException e) {
-        e.printStackTrace();
-    }
-    }
 
     public PreparedStatement PrepareGetCustomerByEmailAndPassword(String sql, String userEmail, String userPassword) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -57,6 +49,7 @@ public class DatabaseConnection {
         GetAllBooks,
         CreateAccount,
         DeleteAccount,
+        EditAccount,
         GetUserName,
         GetUserEmail,
         GetUserPassword,
@@ -117,6 +110,7 @@ public class DatabaseConnection {
             case GetAllBooks: return getAllBooks;
             case CreateAccount: return createAccount;
             case DeleteAccount: return deleteAccount;
+            case EditAccount: return editAccount;
             case GetUserName: return getUserName;
             case GetUserEmail: return getUserEmail;
             case GetUserPassword: return getUserPassword;
@@ -142,6 +136,10 @@ public class DatabaseConnection {
         return stmt.executeQuery();
     }
 
+    public void executeQueryPreparedUpdate(PreparedStatement stmt) throws SQLException {
+        stmt.executeUpdate();
+    }
+
 
     public PreparedStatement PrepareWith1Int(String sql, int i) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -149,7 +147,7 @@ public class DatabaseConnection {
         return pstmt;
     }
 
-    public PreparedStatement PrepareCreateAcoount(String sql, String userName, String userFname, String userEmail, String password, String birthday, String address, String zipCode, String city) throws SQLException {
+    public PreparedStatement PrepareCreateAccount(String sql, String userName, String userFname, String userEmail, String password, String birthday, String address, String zipCode, String city) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setString(1, userName);
         pstmt.setString(2, userFname);
@@ -166,6 +164,20 @@ public class DatabaseConnection {
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setString(1, userEmail);
         pstmt.setString(2, password);
+        return pstmt;
+    }
+
+    public PreparedStatement PrepareEditAccount(String sql, String userName, String userFname, String userEmail, String password, String birthday, String address, String zipCode, String city, String previousEmail) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, userName);
+        pstmt.setString(2, userFname);
+        pstmt.setString(3, userEmail);
+        pstmt.setString(4, password);
+        pstmt.setString(5, birthday);
+        pstmt.setString(6, address);
+        pstmt.setString(7, zipCode);
+        pstmt.setString(8, city);
+        pstmt.setString(9, previousEmail);
         return pstmt;
     }
 

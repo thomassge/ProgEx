@@ -27,39 +27,51 @@ public DataProcessor() {
             String publisher = rs.getString("publisher");
             String genre = rs.getString("genre");
             String description = rs.getString("description");
-            books.add(new Book(id, title, author, isbn, releaseDate, publisher, genre, description));
+            int qty = rs.getInt("qty");     // Annika
+            books.add(new Book(id, title, author, isbn, releaseDate, publisher, genre, description, qty));  //Annika
         }
         return books;
     }
 
-    public ArrayList<Orders> ProccesUserOrders(ResultSet rs) throws SQLException{
+    public static ArrayList<Orders> ProccesUserOrders(ResultSet rs) throws SQLException{
     ArrayList<Orders> orders = new ArrayList<Orders>();
 
     while (rs.next()){
         Orders order = new Orders();
-
+       int bookid = rs.getInt("book_id");
+        order.setBook(Manager.GetBooks().stream().filter(b -> b.getId() == bookid).findFirst().orElse(null));
+        Date lendingDate = rs.getDate("lending_date");
+        Date returnDate = rs.getDate("deadline");
+        order.setOrderdate(lendingDate);
+        order.setReturndate(returnDate);
+        orders.add(order);
     }
 
-return null;
+
+return orders;
     }
 
 
-        public Customer processCustomer(ResultSet rs) throws SQLException{
+        public static Customer processCustomer(ResultSet rs) throws SQLException{
             Customer customer = null;
+            System.out.print("vor proccess: ");
+            System.out.println(rs == null);
 
-                if (rs.next()) {
-                    int id = rs.getInt("id");
-                    String name = rs.getString("name");
-                    String fname = rs.getString("fname");
-                    String email = rs.getString("email");
-                    String password = rs.getString("password");
-                    Date birthday = rs.getDate("birthday");
-                    String address = rs.getString("address");
-                    String zipCode = rs.getString("zip_code");
-                    String city = rs.getString("city");
+                   if (rs.next()) {
+                       int id = rs.getInt("id");
+                       String name = rs.getString("name");
+                       String fname = rs.getString("fname");
+                       String email = rs.getString("email");
+                       String password = rs.getString("password");
+                       Date birthday = new Date();//rs.getDate("birthday");
+                       String address = rs.getString("address");
+                       String zipCode = rs.getString("zip_code");
+                       String city = rs.getString("city");
 
-                    customer = new Customer(id, name, fname, email, password, birthday, address, zipCode, city);
-                }
+                       customer = new Customer(id, name, fname, email, password, birthday, address, zipCode, city);
+                   }
+            System.out.print("nach proccess: ");
+            System.out.println(customer == null);
             return customer;
         }
 
