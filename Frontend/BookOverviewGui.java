@@ -111,7 +111,7 @@ public class BookOverviewGui implements ActionListener {
     }
 /* Funktion hatte einen fehler, wenn man in der suche gesucht hat und dann auf die detailedBookView klickt, wurde der falsche index übergeben
     da durch das sortieren die ursprügnlichen indexe der zeilen beibehalten werden und das dann nicht mit der angezeigten zeile übereinstimmt.
-     
+
     private void addMouseListener(){
         bookOverviewTable.addMouseListener(new MouseAdapter() {
             @Override
