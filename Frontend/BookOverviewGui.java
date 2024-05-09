@@ -109,7 +109,9 @@ public class BookOverviewGui implements ActionListener {
 
         addMouseListener();
     }
-
+/* Funktion hatte einen fehler, wenn man in der suche gesucht hat und dann auf die detailedBookView klickt, wurde der falsche index übergeben
+    da durch das sortieren die ursprügnlichen indexe der zeilen beibehalten werden und das dann nicht mit der angezeigten zeile übereinstimmt.
+     
     private void addMouseListener(){
         bookOverviewTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -126,6 +128,39 @@ public class BookOverviewGui implements ActionListener {
             }
         });
     }
+*/
+private void addMouseListener() {
+    bookOverviewTable.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (e.getClickCount() == 1) {
+                JTable target = (JTable) e.getSource();
+                int viewRow = target.getSelectedRow(); // Zeilenindex in der angezeigten Tabelle
+                if (viewRow != -1) {
+                    int modelRow = target.convertRowIndexToModel(viewRow); // Konvertiere zum Modellindex
+                    int id = Integer.parseInt(target.getModel().getValueAt(modelRow, 0).toString());
+                    Book selectedBook = findBookById(id);
+                    if (selectedBook != null) {
+                        new DetailedBookView(selectedBook);
+                    } else {
+                        System.out.println("No book found with ID: " + id);
+                    }
+                }
+            }
+        }
+    });
+}
+
+
+    private Book findBookById(int id) {
+        for (Book book : books) {
+            if (book.getId() == id) {
+                return book;
+            }
+        }
+        return null;
+    }
+
 
     private void createBookOverviewSearchBar() {
         JPanel panel = new JPanel();
