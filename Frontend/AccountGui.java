@@ -7,38 +7,43 @@ import java.awt.*;
 
 public class AccountGui {
 
-        private final Customer loggedInUser;
+    private final Customer loggedInUser;
 
-        public AccountGui(Customer user) {
-            this.loggedInUser = user;
-            createAccountFrame();
-        }
+    public AccountGui(Customer loggedInUser) {
+        this.loggedInUser = loggedInUser;
+        createAccountFrame();
+    }
 
-        private void createAccountFrame() {
-            JFrame accountFrame = new JFrame("Account Information");
-            accountFrame.setLayout(new BorderLayout());
-            accountFrame.setSize(600, 400);
-            accountFrame.setLocationRelativeTo(null);
+    private void createAccountFrame() {
+        JFrame accountFrame = new JFrame("Account Information");
+        accountFrame.setLayout(new BorderLayout());
+        accountFrame.setSize(600, 400);
+        accountFrame.setLocationRelativeTo(null);
 
-            JPanel infoPanel = new JPanel();
-            infoPanel.add(new JLabel("Name: " + loggedInUser.getName()));
-            infoPanel.add(new JLabel("Surname: " + loggedInUser.getFname()));
-            infoPanel.add(new JLabel("Email: " + loggedInUser.geteMail()));
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        infoPanel.add(new JLabel("Name: " + loggedInUser.getName()));
+        infoPanel.add(new JLabel("Surname: " + loggedInUser.getFname()));
+        infoPanel.add(new JLabel("Email: " + loggedInUser.geteMail()));
+        infoPanel.add(new JLabel("Birthday: " + loggedInUser.getBirthday()));
+        infoPanel.add(new JLabel("Address: " + loggedInUser.getAddress()));
+        infoPanel.add(new JLabel("Zip Code: " + loggedInUser.getZip_code()));
+        infoPanel.add(new JLabel("City: " + loggedInUser.getCity()));
 
-            JButton editButton = new JButton("Edit Information");
-            editButton.addActionListener(e -> openEditWindow());
+        JButton editButton = new JButton("Edit Information");
+        editButton.addActionListener(e -> openEditWindow());
 
-            JButton logoutButton = new JButton("Logout");
-            logoutButton.addActionListener(e -> {
-                accountFrame.dispose();
-                new MainGui();
-            });
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(e -> {
+            accountFrame.dispose();
+            new MainGui();
+        });
 
-            accountFrame.add(infoPanel, BorderLayout.CENTER);
-            accountFrame.add(editButton, BorderLayout.SOUTH);
-            accountFrame.add(logoutButton, BorderLayout.NORTH);
-            accountFrame.setVisible(true);
-        }
+        accountFrame.add(infoPanel, BorderLayout.CENTER);
+        accountFrame.add(editButton, BorderLayout.SOUTH);
+        accountFrame.add(logoutButton, BorderLayout.NORTH);
+        accountFrame.setVisible(true);
+    }
 
         private void openEditWindow() {
             JFrame editFrame = new JFrame("Edit Information");

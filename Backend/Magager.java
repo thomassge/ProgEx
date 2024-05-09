@@ -67,11 +67,8 @@ public class Magager {
         }
     }
 
-
-
-
 public ArrayList<Book> GetBooks(){
-        return bookAdministration.getBooks();
+        return  bookAdministration.getBooks();
 }
 /*
     public ArrayList<Book> GetBookIds(){    //Annika

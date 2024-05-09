@@ -5,24 +5,27 @@ import Backend.Magager;
 import DataStructure.Book;
 import DataStructure.Customer;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainGui {
-    private JFrame mainGuiFrame = new JFrame();
-    private JFrame deleteFrame = new JFrame();
-    private JFrame accountFrame = new JFrame();
-    private JButton actionButton;
+    private final JFrame mainGuiFrame = new JFrame();
+    private final JFrame deleteFrame = new JFrame();
+    private JFrame frame;
     private ArrayList<Book> books;
-    private Customer customer;
+    private Customer loggedInUser;
 
     public MainGui() {
         Magager manager = new Magager();
         try {
             manager.LoadBooks();
+            books = manager.GetBooks();
             createMainGuiFrame();
             createMainGuiLayout();
         } catch (Exception e) {
@@ -37,194 +40,199 @@ public class MainGui {
         mainGuiFrame.setSize(800, 600);
         mainGuiFrame.setLocationRelativeTo(null);
         mainGuiFrame.setLayout(new BorderLayout());
+
+        try {
+            BufferedImage img = ImageIO.read(getClass().getResource("/FrontEnd/background.png"));
+            JPanel panel = new JPanel() {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    super.paintComponent(g);
+                    g.drawImage(img, 0, 0, null);
+                }
+            };
+            panel.setLayout(new BorderLayout());
+            mainGuiFrame.setContentPane(panel);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         mainGuiFrame.setVisible(true);
     }
 
     private void createMainGuiLayout() {
         JPanel flowPanel = new JPanel(new FlowLayout());
-        JButton LogInButton = new JButton("Log In");
-        JButton CreateAccountButton = new JButton("Create Account");
-        JButton DeleteAccountButton = new JButton("Delete Account");
-
-        flowPanel.add(LogInButton);
-        flowPanel.add(CreateAccountButton);
-        flowPanel.add(DeleteAccountButton);
+        addButtonToPanel(flowPanel, "Log In", this::createLoginFrame);
+        addButtonToPanel(flowPanel, "Create Account", this::createAccountFrame);
+        addButtonToPanel(flowPanel, "Delete Account", this::deleteAccountFrame);
         mainGuiFrame.add(flowPanel, BorderLayout.SOUTH);
+    }
 
-        LogInButton.addActionListener((ActionEvent e) -> {
-            createLoginFrame();
-//            mainGuiFrame.dispose();
-        });
-
-        CreateAccountButton.addActionListener((ActionEvent e) -> {
-            createAccountFrame();
-//            mainGuiFrame.dispose();
-        });
-
-        DeleteAccountButton.addActionListener((ActionEvent e) -> {
-            deleteAccountFrame();
-//            mainGuiFrame.dispose();
-        });
+    private void addButtonToPanel(JPanel panel, String buttonText, Runnable action) {
+        JButton button = new JButton(buttonText);
+        button.addActionListener(e -> action.run());
+        panel.add(button);
     }
 
     private void createLoginFrame() {
-        JFrame loginFrame = new JFrame("Login");
-        loginFrame.setSize(300, 200);
-        loginFrame.setLocationRelativeTo(null);
-
-        JPanel panel = new JPanel();
-        loginFrame.add(panel);
-        placeComponents(panel, "login");
-
-        loginFrame.setVisible(true);
+        createFrame("Login", "login");
     }
 
     private void createAccountFrame() {
-        accountFrame = new JFrame("Create Account");
-        accountFrame.setSize(300, 200);
-        accountFrame.setLocationRelativeTo(null);
+        createFrame("Create Account", "create");
+    }
+
+    private void deleteAccountFrame() {
+        createFrame("Delete Account", "delete");
+    }
+
+    private boolean validateInputFields(JTextField emailTextField, JPasswordField passwordTextField, JTextField nameTextField,
+                                        JTextField fnameTextField, JTextField birthdayTextField, JTextField addressTextField, JTextField zipCodeTextField, JTextField cityTextField) {
+        if (emailTextField.getText().isEmpty() || passwordTextField.getPassword().length == 0 || nameTextField.getText().isEmpty() ||
+                fnameTextField.getText().isEmpty() || birthdayTextField.getText().isEmpty() || addressTextField.getText().isEmpty() ||
+                zipCodeTextField.getText().isEmpty() || cityTextField.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(emailTextField.getText());
+        if (!matcher.matches()) {
+            JOptionPane.showMessageDialog(null, "Please enter a valid email.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        String birthdayRegex = "^\\d{2}\\.\\d{2}\\.\\d{4}$";
+        pattern = Pattern.compile(birthdayRegex);
+        matcher = pattern.matcher(birthdayTextField.getText());
+        if (!matcher.matches()) {
+            JOptionPane.showMessageDialog(null, "Please enter a valid birthday (dd.mm.yyyy).", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void createFrame(String frameTitle, String action) {
+        frame = new JFrame(frameTitle);
+        frame.setSize(300, 200);
+
+        if(frameTitle.equals("Create Account")) {
+            frame.setSize(300, 375);
+        }
+
+        frame.setLocationRelativeTo(null);
 
         JPanel panel = new JPanel();
-        accountFrame.add(panel);
-        placeComponents(panel, "create");
+        frame.add(panel);
+        placeComponents(panel, action);
 
-        accountFrame.setVisible(true);
+        frame.setVisible(true);
     }
 
     private void placeComponents(JPanel panel, String action) {
         panel.setLayout(null);
 
-        JLabel userLabel = new JLabel("User");
-        userLabel.setBounds(10, 20, 80, 25);
-        panel.add(userLabel);
+        JTextField emailTextField = createLabeledTextField(panel, "Email", 20);
+        JPasswordField passwordTextField = createLabeledPasswordField(panel);
 
-        JTextField userText = new JTextField(20);
-        userText.setBounds(100, 20, 165, 25);
-        panel.add(userText);
-
-        JLabel passwordLabel = new JLabel("Password");
-        passwordLabel.setBounds(10, 50, 80, 25);
-        panel.add(passwordLabel);
-
-        JPasswordField passwordText = new JPasswordField(20);
-        passwordText.setBounds(100, 50, 165, 25);
-        panel.add(passwordText);
-
-
-//        panel.add(actionButton);
-        actionButton = new JButton(action);
-
-        for (ActionListener al : actionButton.getActionListeners()) {
-            actionButton.removeActionListener(al);
-        }
+        JButton actionButton = new JButton(action);
+        actionButton.setBounds(10, 80, 80, 25);
+        actionButton.addActionListener(e -> performAction(action, emailTextField, passwordTextField));
+        panel.add(actionButton);
 
         if (action.equals("create")) {
-            JLabel nameLabel = new JLabel("Name");
-            nameLabel.setBounds(10, 80, 80, 25);
-            panel.add(nameLabel);
+            JTextField nameTextField = createLabeledTextField(panel, "Name", 80);
+            JTextField fnameTextField = createLabeledTextField(panel, "First Name", 110);
+            JTextField birthdayTextField = createLabeledTextField(panel, "Birthday", 140);
+            JTextField addressTextField = createLabeledTextField(panel, "Address", 170);
+            JTextField zipCodeTextField = createLabeledTextField(panel, "Zip Code", 200);
+            JTextField cityTextField = createLabeledTextField(panel, "City", 230);
 
-            JTextField nameText = new JTextField(20);
-            nameText.setBounds(100, 80, 165, 25);
-            panel.add(nameText);
-
-            JLabel fnameLabel = new JLabel("First Name");
-            fnameLabel.setBounds(10, 110, 80, 25);
-            panel.add(fnameLabel);
-
-            JTextField fnameText = new JTextField(20);
-            fnameText.setBounds(100, 110, 165, 25);
-            panel.add(fnameText);
-
-            JLabel birthdayLabel = new JLabel("Birthday");
-            birthdayLabel.setBounds(10, 140, 80, 25);
-            panel.add(birthdayLabel);
-
-            JTextField birthdayText = new JTextField(20);
-            birthdayText.setBounds(100, 140, 165, 25);
-            panel.add(birthdayText);
-
-            JLabel addressLabel = new JLabel("Address");
-            addressLabel.setBounds(10, 170, 80, 25);
-            panel.add(addressLabel);
-
-            JTextField addressText = new JTextField(20);
-            addressText.setBounds(100, 170, 165, 25);
-            panel.add(addressText);
-
-            JLabel zipCodeLabel = new JLabel("Zip Code");
-            zipCodeLabel.setBounds(10, 200, 80, 25);
-            panel.add(zipCodeLabel);
-
-            JTextField zipCodeText = new JTextField(20);
-            zipCodeText.setBounds(100, 200, 165, 25);
-            panel.add(zipCodeText);
-
-            JLabel cityLabel = new JLabel("City");
-            cityLabel.setBounds(10, 230, 80, 25);
-            panel.add(cityLabel);
-
-            JTextField cityText = new JTextField(20);
-            cityText.setBounds(100, 230, 165, 25);
-            panel.add(cityText);
-
-            actionButton = new JButton(action);
-            actionButton.setBounds(10, 260, 80, 25);
-
-
-            actionButton.addActionListener(e -> {
-                String email = userText.getText();
-                String password = new String(passwordText.getPassword());
-                String name = nameText.getText();
-                String fname = fnameText.getText();
-                String birthday = birthdayText.getText();
-                String address = addressText.getText();
-                String zipCode = zipCodeText.getText();
-                String city = cityText.getText();
-
-                switch (action) {
-                    case "create":
-                        LoginBackend.createAccount(customer, name, fname, email, password, birthday, address, zipCode, city);
-                        accountFrame.dispose();
-                        break;
-                    // ...
-                }
-            });
-            panel.add(actionButton);
-        } else {
-//            actionButton = new JButton(action);
-            actionButton.setBounds(10, 80, 80, 25);
-            actionButton.addActionListener(e -> {
-                String email = userText.getText();
-                String password = new String(passwordText.getPassword());
-
-                switch (action) {
-                    case "login":
-                        if (LoginBackend.checkLogin(email, password)) {
-                            new BookOverviewGui(books);
-                        } else {
-                            // Login failed
-                            JOptionPane.showMessageDialog(null, "Login failed. Please check your credentials and try again.", "Login Failed", JOptionPane.ERROR_MESSAGE);
-                        }
-                        break;
-                    case "delete":
-                        LoginBackend.deleteAccount(customer, email, password);
-                        deleteFrame.dispose();
-                        break;
-                }
-            });
-            panel.add(actionButton);
+            actionButton.setBounds(10, 265, 80, 25);
+            addActionToCreateButton(actionButton, emailTextField, passwordTextField, nameTextField, fnameTextField, birthdayTextField,
+                                addressTextField, zipCodeTextField, cityTextField);
         }
     }
 
-    private void deleteAccountFrame() {
-        deleteFrame = new JFrame("Delete Account");
-        deleteFrame.setSize(300, 200);
-        deleteFrame.setLocationRelativeTo(null);
+    private JTextField createLabeledTextField(JPanel panel, String labelText, int y) {
+        JLabel label = createLabel(labelText, y);
+        panel.add(label);
 
-        JPanel panel = new JPanel();
-        deleteFrame.add(panel);
-        placeComponents(panel, "delete");
+        JTextField textField = createTextField(y);
+        panel.add(textField);
 
-        deleteFrame.setVisible(true);
+        return textField;
+    }
+
+    private JPasswordField createLabeledPasswordField(JPanel panel) {
+        JLabel label = createLabel("Password", 50);
+        panel.add(label);
+
+        JPasswordField passwordField = createPasswordField();
+        panel.add(passwordField);
+
+        return passwordField;
+    }
+
+    private void addActionToCreateButton(JButton actionButton, JTextField emailTextField, JPasswordField passwordTextField, JTextField nameTextField,
+                                         JTextField fnameTextField, JTextField birthdayTextField, JTextField addressTextField, JTextField zipCodeTextField, JTextField cityTextField) {
+        actionButton.addActionListener(e -> {
+            if(validateInputFields(emailTextField, passwordTextField, nameTextField, fnameTextField,
+                                    birthdayTextField, addressTextField, zipCodeTextField, cityTextField)) {
+                String email = emailTextField.getText();
+                String password = new String(passwordTextField.getPassword());
+                String name = nameTextField.getText();
+                String fname = fnameTextField.getText();
+                String birthday = birthdayTextField.getText();
+                String address = addressTextField.getText();
+                String zipCode = zipCodeTextField.getText();
+                String city = cityTextField.getText();
+                LoginBackend.createAccount(loggedInUser, name, fname, email, password, birthday, address, zipCode, city);
+                frame.dispose();
+            }
+        });
+    }
+
+    private JLabel createLabel(String text, int y) {
+        JLabel label = new JLabel(text);
+        label.setBounds(10, y, 80, 25);
+        return label;
+    }
+
+    private JTextField createTextField(int y) {
+        JTextField textField = new JTextField(20);
+        textField.setBounds(100, y, 165, 25);
+        return textField;
+    }
+
+    private JPasswordField createPasswordField() {
+        JPasswordField passwordField = new JPasswordField(20);
+        passwordField.setBounds(100, 50, 165, 25);
+        return passwordField;
+    }
+
+    private void performAction(String action, JTextField userText, JPasswordField passwordText) {
+        String email = userText.getText();
+        String password = new String(passwordText.getPassword());
+
+        switch (action) {
+            case "login":
+                if (LoginBackend.checkLogin(email, password)) {
+                    //loggedInUser = LoginBackend.getLoggedInUser(email, password);
+                    new BookOverviewGui(books, loggedInUser);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Login failed. Please check your credentials and try again.", "Login Failed", JOptionPane.ERROR_MESSAGE);
+                }
+                break;
+            case "delete":
+                if(LoginBackend.checkLogin(email, password)) {
+                    LoginBackend.deleteAccount(loggedInUser, email, password);
+                    deleteFrame.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Delete failed. Please check your credentials and try again.", "Delete Failed", JOptionPane.ERROR_MESSAGE);
+                }
+                break;
+        }
     }
 }

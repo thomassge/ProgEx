@@ -1,6 +1,7 @@
 package Frontend;
 
 import DataStructure.Book;
+import DataStructure.Customer;
 import DataStructure.Orders;
 
 import javax.swing.*;
@@ -26,10 +27,11 @@ public class BookOverviewGui implements ActionListener {
     private JTextField searchField;
     private final ArrayList<Book> books;
     private List<Orders> orders;
-//    private DataStructure.Customer user;
+    private final Customer loggedInUser;
 
-    public BookOverviewGui(ArrayList <Book> books) {
+    public BookOverviewGui(ArrayList <Book> books, Customer loggedInUser) {
         this.books = books;
+        this.loggedInUser = loggedInUser;
         initializeBookOverviewData(books);
         createBookOverviewFrame();
         createBookOverviewMenuBar();
@@ -84,7 +86,7 @@ public class BookOverviewGui implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if ("Account".equals(e.getActionCommand())) {
-            //new AccountGui(user);
+            new AccountGui(loggedInUser);
         } else if ("Personal Books".equals(e.getActionCommand())) {
             new PersonalBooksGui(orders, books);
         }
