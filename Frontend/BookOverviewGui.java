@@ -1,6 +1,7 @@
 package Frontend;
 
 import DataStructure.Book;
+import DataStructure.Customer;
 import DataStructure.Orders;
 
 import javax.swing.*;
@@ -26,10 +27,11 @@ public class BookOverviewGui implements ActionListener {
     private JTextField searchField;
     private final ArrayList<Book> books;
     private List<Orders> orders;
-//    private DataStructure.Customer user;
+    private final Customer loggedInUser;
 
-    public BookOverviewGui(ArrayList <Book> books) {
+    public BookOverviewGui(ArrayList <Book> books, Customer loggedInUser) {
         this.books = books;
+        this.loggedInUser = loggedInUser;
         initializeBookOverviewData(books);
         createBookOverviewFrame();
         createBookOverviewMenuBar();
@@ -42,10 +44,13 @@ public class BookOverviewGui implements ActionListener {
     }
 
     private void initializeBookOverviewData(ArrayList<Book> books){
+        if (books == null) {
+            books = new ArrayList<>();
+        }
 
-        bookMenuData = new Object[books.getLast().getId()][columnNames.length];
+        bookMenuData = new Object[books.size()][columnNames.length];
 
-        for (int selectedBook = 0; selectedBook < books.getLast().getId(); selectedBook++) {
+        for (int selectedBook = 0; selectedBook < books.size(); selectedBook++) {
             bookMenuData[selectedBook][0] = books.get(selectedBook).getId();
             bookMenuData[selectedBook][1] = books.get(selectedBook).getTitle();
             bookMenuData[selectedBook][2] = books.get(selectedBook).getAuthor();
@@ -81,9 +86,9 @@ public class BookOverviewGui implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if ("Account".equals(e.getActionCommand())) {
-            //new AccountGui(user);
+            new AccountGui(loggedInUser);
         } else if ("Personal Books".equals(e.getActionCommand())) {
-            //new PersonalBooksGui(orders, books);
+            new PersonalBooksGui(orders, books);
         }
     }
 
