@@ -19,7 +19,7 @@ public class MainGui {
     private final JFrame deleteFrame = new JFrame();
     private JFrame frame;
     private ArrayList<Book> books;
-    private Customer loggedInUser;
+    //private Customer loggedInUser;
 
     public MainGui() {
 
@@ -99,7 +99,7 @@ public class MainGui {
             return false;
         }
 
-        String birthdayRegex = "^\\d{2}\\.\\d{2}\\.\\d{4}$";
+        String birthdayRegex = "^\\d{4}-\\d{2}-\\d{2}$";
         pattern = Pattern.compile(birthdayRegex);
         matcher = pattern.matcher(birthdayTextField.getText());
         if (!matcher.matches()) {
@@ -216,8 +216,9 @@ public class MainGui {
         switch (action) {
             case "login":
                 if (LoginBackend.checkLogin(email, password)) {
-                    //loggedInUser = LoginBackend.getLoggedInUser(email, password);
-                    new BookOverviewGui(books, loggedInUser);
+                   mainGuiFrame.dispose();
+                   frame.dispose();
+                    new BookOverviewGui(books);
                 } else {
                     JOptionPane.showMessageDialog(null, "Login failed. Please check your credentials and try again.", "Login Failed", JOptionPane.ERROR_MESSAGE);
                 }
