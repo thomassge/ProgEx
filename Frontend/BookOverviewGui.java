@@ -27,11 +27,11 @@ public class BookOverviewGui implements ActionListener {
     private JTextField searchField;
     private final ArrayList<Book> books;
     private List<Orders> orders;
-    private final Customer loggedInUser;
+//    private final Customer loggedInUser;
 
-    public BookOverviewGui(ArrayList <Book> books, Customer loggedInUser) {
+    public BookOverviewGui(ArrayList <Book> books) {
         this.books = books;
-        this.loggedInUser = loggedInUser;
+//        this.loggedInUser = loggedInUser;
         initializeBookOverviewData(books);
         createBookOverviewFrame();
         createBookOverviewMenuBar();
@@ -75,6 +75,7 @@ public class BookOverviewGui implements ActionListener {
         bookOverviewMenuBar.add(menu);
         addItemToMenuWithActionCommand(menu, "Account", "AccountGui");
         addItemToMenuWithActionCommand(menu, "Personal Books", "PersonalBooksGui");
+        addItemToMenuWithActionCommand(menu, "Logout", "Logout");
     }
 
     private void addItemToMenuWithActionCommand(JMenu menu, String itemName, String actionCmd) {
@@ -85,12 +86,16 @@ public class BookOverviewGui implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        if ("Account".equals(e.getActionCommand())) {
-            new AccountGui(loggedInUser);
-        } else if ("Personal Books".equals(e.getActionCommand())) {
+        if ("AccountGui".equals(e.getActionCommand())) {
+            System.out.println("Launching Account GUI");
+            new AccountGui();
+        } else if ("PersonalBooksGui".equals(e.getActionCommand())) {
             new PersonalBooksGui(orders, books);
+        } else if ("Logout".equals(e.getActionCommand())) {
+            new MainGui();
         }
     }
+
 
     private void createBookOverviewTable() {
         bookOverviewTable = new JTable(bookMenuData, columnNames) {
@@ -109,26 +114,7 @@ public class BookOverviewGui implements ActionListener {
 
         addMouseListener();
     }
-/* Funktion hatte einen fehler, wenn man in der suche gesucht hat und dann auf die detailedBookView klickt, wurde der falsche index übergeben
-    da durch das sortieren die ursprügnlichen indexe der zeilen beibehalten werden und das dann nicht mit der angezeigten zeile übereinstimmt.
 
-    private void addMouseListener(){
-        bookOverviewTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 1) {
-                    JTable target = (JTable) e.getSource();
-                    int row = target.getSelectedRow();
-                    int id = Integer.parseInt(target.getModel().getValueAt(row, 0).toString());
-                    if (row != -1) {
-                        Book selectedBook = books.get(row);
-                        new DetailedBookView(selectedBook);
-                    }
-                }
-            }
-        });
-    }
-*/
 private void addMouseListener() {
     bookOverviewTable.addMouseListener(new MouseAdapter() {
         @Override
