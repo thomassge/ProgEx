@@ -36,7 +36,7 @@ public class DatabaseConnection {
     static String getAllLentBooks = "SELECT * FROM lent_books";
     static String insertLentBook = "INSERT INTO lent_books (book_id, customer_id, deadline, lending_date) VALUES (?, ?, ?, ?)";      //Annika
     static String updateLentBook ="UPDATE lent_books SET deadline = ? WHERE book_id = ? AND customer_id = ?"; //Annika
-    static String removeLentBook = "DELETE FROM lent_books WHERE book_id = ? AND customer_id = ?";      //Annika
+    static String removeLentBook = "DELETE FROM lent_books WHERE booking_id = ?";      //Annika
     static String updateBookQty = "UPDATE qty SET qty = ? WHERE book_id = ?";   //Annika
     // static String getCustomersIdenticalBook = "SELECT Customer.* FROM Customer JOIN lent_books ON Customer.id = lent_books.customer_id WHERE lent_books.book_id = ?";
 
@@ -211,10 +211,10 @@ public class DatabaseConnection {
     }
 
     //Annika
-    public PreparedStatement removeLentBookFromDatabase(String sql, int bookID, int customerID) throws SQLException {
+    public PreparedStatement removeLentBookFromDatabase(String sql, int bookingId) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(sql);
-        pstmt.setInt(1, bookID);
-        pstmt.setInt(2, customerID);
+        pstmt.setInt(1, bookingId);
+        //pstmt.setInt(2, customerID);
         return pstmt;
     }
 

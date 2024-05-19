@@ -76,22 +76,7 @@ public class Manager {
         System.out.println(user.getId());
 
     }
-/*
-    public static void LoadBookIds() throws SQLException{  //Annika
-        ArrayList<Book> books = GetBooks();
-        ArrayList<Integer> bookIds = new ArrayList<Integer>();
 
-        for(int id : bookIds){
-
-            for(Book book : books){
-                if(book.getId() == id){
-                  //  book.setQty();
-                }
-
-            }
-        }
-    }
-*/
     public static ArrayList<Orders> GetPersonalBooks(){
        return user.getOrders();
     }
@@ -100,20 +85,8 @@ public static ArrayList<Book> GetBooks(){
         return  bookAdministration.getBooks();
 }
 /*
-public static Book GetSingleBookByID(int id){       //Annika
-        ArrayList<Book> books = Manager.GetUser().getOrders();
-        for(Book book : books){
-                if(book.getId() == id){
-                  return book;
-                }
-}
-
    public static void UpdateBookQty(int id, int qty) {
         bookAdministration.UpdateBookQty(id, qty);
-    }
-
-    public ArrayList<Book> GetBookIds(){    //Annika
-      //  return bookAdministration.getBookIds();
     }
 */
 }

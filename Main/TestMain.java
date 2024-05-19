@@ -19,17 +19,16 @@ public class TestMain {
         ArrayList<Book> books = Manager.GetBooks();
         Book book = books.get(0);
         LoginBackend.checkLogin("jane.smith@example.com", "password456");
-/*
+ /*
         try {
             LendBook.lendBook(book);
         } catch (BookUnavailableException e) {
-            // Zeigen Sie die Fehlermeldung in Ihrer GUI an
+            // Fehlermeldung in GUI anzeigen
             System.out.println(e.getMessage());
         }
-*/
+ */
 
-
-        //LendBook.extendBook(book);    //extendBook funktioniert nicht, da Manager.GetUser().getOrders().get(bookID) null zurückgibt??
-        LendBook.returnBook(book);      //returnBook funktioniert bis auf Aktualisierung der Quantity
+        //LendBook.extendBook(book);
+        LendBook.returnBook(book);      //returnBook funktioniert bis auf wenn man zwei mal das gleiche Buch ausleiht und das zweite zurückgibt, dann wird das erste Buch auch zurückgegeben
         }
 }

@@ -22,7 +22,7 @@ public class LendBook {
         int customerID = Manager.GetUser().getId();
         Date lendingDate = new Date();
         Date returnDate = calculateReturnDate(lendingDate);
-        int bookQty = book.getQty() - 1;        //SQL Befehl, der automatisch dekrementiert? Überprüfen, dass nicht ins negative gezählt wird
+        int bookQty = book.getQty() - 1;
         insertLentBookInDB(bookID, customerID, lendingDate, returnDate);
         updateBookQtyInDB(bookID, bookQty);
         }
@@ -31,7 +31,7 @@ public class LendBook {
     public static void extendBook(Book book){
         int bookID = book.getId();
         int customerID = Manager.GetUser().getId();
-        // TODO: schreibe Methode getLendingDate in Orders in Managerklasse -> denn die Methode get(bookID) gibt null zurück in einem Array das nur ein Buch enthält
+
         Date lendingDate = Manager.GetUser().getOrderForBook(bookID).getOrderdate();
         // Umwandlung von java.sql.Date zu java.util.Date
         java.util.Date utilLendingDate = new java.util.Date(lendingDate.getTime());
@@ -44,7 +44,7 @@ public class LendBook {
         //java.util.Date utilExtendingDate = new java.util.Date(extendingDate.getTime());
 
         if(!isBookExtendable(utilLendingDate, extendingDate)){
-            //TODO Buch ist nicht verlängerbar -> Fehlermeldung in GUI
+            //TODO Buch ist nicht verlängerbar -> throw Exception
             System.out.println("Test");
         } else {
             updateLentBookInDB(bookID, customerID, extendingDate);
@@ -54,10 +54,13 @@ public class LendBook {
     public static void returnBook(Book book){
         int bookID = book.getId();
         int customerID = Manager.GetUser().getId();
-        Date lendingDate = Manager.GetUser().getOrderForBook(bookID).getOrderdate();
-        Date returnDate = Manager.GetUser().getOrderForBook(bookID).getReturndate();
+        int bookingId = Manager.GetUser().getOrderForBook(bookID).getBookingId();   //Annika
+
+        //Date lendingDate = Manager.GetUser().getOrderForBook(bookID).getOrderdate();
+
+        //Date returnDate = Manager.GetUser().getOrderForBook(bookID).getReturndate();
         int bookQty = book.getQty() + 1;
-        removeLentBookInDB(bookID, customerID);
+        removeLentBookInDB(bookingId);  //Annika
         updateBookQtyInDB(bookID, bookQty);
     }
 
@@ -82,9 +85,9 @@ public class LendBook {
         }
     }
 
-    public static void removeLentBookInDB(int bookID, int customerID) {
+    public static void removeLentBookInDB(int bookingId) {
         try {
-            PreparedStatement stmt = dbConn.removeLentBookFromDatabase(DatabaseConnection.GetCommand(DatabaseConnection.Command.RemoveLentBook), bookID, customerID);
+            PreparedStatement stmt = dbConn.removeLentBookFromDatabase(DatabaseConnection.GetCommand(DatabaseConnection.Command.RemoveLentBook), bookingId);
             dbConn.executeQueryPreparedUpdate(stmt);
         } catch (SQLException e){
             e.printStackTrace();
@@ -108,7 +111,6 @@ public class LendBook {
     }
 
     private static boolean isBookExtendable(Date lendingDate, Date returnDate){
-        // 2592000 = 30 Tage in Millisekunden
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(lendingDate);
         calendar.add(Calendar.DATE, 30); // Add 30 days to current date

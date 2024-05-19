@@ -110,14 +110,37 @@ ArrayList<Orders> orders;
     }
 
     public Orders getOrderForBook(int bookId) {
+        ArrayList<Orders> allOrdersforBook = new ArrayList<>();
+
         for (Orders order : orders) {
             if (order.getBook().getId() == bookId) {
-                return order;
+                allOrdersforBook.add(order);
             }
         }
-        return null;
+
+        return getOrderWithTheEarliestLendingDate(allOrdersforBook);
     }
 
+    private Orders getOrderWithTheEarliestLendingDate(ArrayList<Orders> allOrdersforBook) {
+        Orders orderWithEarliestLendingDate = allOrdersforBook.getFirst();
+        for (Orders order : allOrdersforBook) {
+            if (order.getOrderdate().before(orderWithEarliestLendingDate.getOrderdate())) {
+                orderWithEarliestLendingDate = order;
+            }
+        }
+        return orderWithEarliestLendingDate;
+    }
+
+    /*
+        public Orders getOrderForBook(int bookId) {
+            for (Orders order : orders) {
+                if (order.getBook().getId() == bookId) {
+                    return order;
+                }
+            }
+            return null;
+        }
+    */
     public void PrintPersonalBooks(){
       for(Orders o : orders){
          o.WriteOrderInConsole();
