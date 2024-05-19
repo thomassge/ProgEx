@@ -32,11 +32,11 @@ public class LendBook {
         int bookID = book.getId();
         int customerID = Manager.GetUser().getId();
         // TODO: schreibe Methode getLendingDate in Orders in Managerklasse -> denn die Methode get(bookID) gibt null zurück in einem Array das nur ein Buch enthält
-        Date lendingDate = Manager.GetUser().getOrders().get(bookID).getOrderdate();
+        Date lendingDate = Manager.GetUser().getOrderForBook(bookID).getOrderdate();
         // Umwandlung von java.sql.Date zu java.util.Date
         java.util.Date utilLendingDate = new java.util.Date(lendingDate.getTime());
         //Date date = new Date();
-        Date returnDate = Manager.GetUser().getOrders().get(bookID).getReturndate();
+        Date returnDate = Manager.GetUser().getOrderForBook(bookID).getReturndate();
         // Umwandlung von java.sql.Date zu java.util.Date
         java.util.Date utilReturnDate = new java.util.Date(returnDate.getTime());
 
@@ -54,8 +54,8 @@ public class LendBook {
     public static void returnBook(Book book){
         int bookID = book.getId();
         int customerID = Manager.GetUser().getId();
-        Date lendingDate = Manager.GetUser().getOrders().get(bookID).getOrderdate();
-        Date returnDate = Manager.GetUser().getOrders().get(bookID).getReturndate();
+        Date lendingDate = Manager.GetUser().getOrderForBook(bookID).getOrderdate();
+        Date returnDate = Manager.GetUser().getOrderForBook(bookID).getReturndate();
         int bookQty = book.getQty() + 1;
         removeLentBookInDB(bookID, customerID);
         updateBookQtyInDB(bookID, bookQty);

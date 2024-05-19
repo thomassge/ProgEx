@@ -108,6 +108,16 @@ ArrayList<Orders> orders;
         this.orders = orders;
 
     }
+
+    public Orders getOrderForBook(int bookId) {
+        for (Orders order : orders) {
+            if (order.getBook().getId() == bookId) {
+                return order;
+            }
+        }
+        return null;
+    }
+
     public void PrintPersonalBooks(){
       for(Orders o : orders){
          o.WriteOrderInConsole();
