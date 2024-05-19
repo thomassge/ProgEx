@@ -15,7 +15,7 @@ public class DatabaseConnection {
     private Connection conn = null;
 
     static String getCustomerByEmailAndPassword = "SELECT * FROM customer WHERE email = ? AND password = ?";
-    static String getAllBooks = "SELECT book.*, qty.qty FROM book, qty WHERE book.id = qty.book_id;";       //Annika
+    static String getAllBooks = "SELECT book.*, qty.qty FROM book, qty WHERE book.id = qty.book_id";       //Annika
     static String createAccount = "INSERT INTO customer (name, fname, email, password, birthday, address, zip_code, city) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     static String deleteAccount = "DELETE FROM customer WHERE email = ? AND password = ?";
     static String editAccount = "UPDATE customer SET name = ?, fname = ?, email = ?, password = ?, birthday = ?, address = ?, zip_code = ?, city = ? WHERE email = ?";
@@ -34,9 +34,11 @@ public class DatabaseConnection {
     static String getQuantityBooks = "SELECT * FROM qty";
     static  String getMostBorrowedBook = "SELECT Book.id, Book.title, COUNT(*) AS num_borrowed FROM Book JOIN lent_books ON Book.id = lent_books.book_id GROUP BY Book.id, Book.title ORDER BY num_borrowed DESC";
     static String getAllLentBooks = "SELECT * FROM lent_books";
-   // static String getCustomersIdenticalBook = "SELECT Customer.* FROM Customer JOIN lent_books ON Customer.id = lent_books.customer_id WHERE lent_books.book_id = ?";
-
-
+    static String insertLentBook = "INSERT INTO lent_books (book_id, customer_id, deadline, lending_date) VALUES (?, ?, ?, ?)";      //Annika
+    static String updateLentBook ="UPDATE lent_books SET deadline = ? WHERE book_id = ? AND customer_id = ?"; //Annika
+    static String removeLentBook = "DELETE FROM lent_books WHERE book_id = ? AND customer_id = ?";      //Annika
+    static String updateBookQty = "UPDATE qty SET qty = ? WHERE book_id = ?";   //Annika
+    // static String getCustomersIdenticalBook = "SELECT Customer.* FROM Customer JOIN lent_books ON Customer.id = lent_books.customer_id WHERE lent_books.book_id = ?";
 
     public PreparedStatement PrepareGetCustomerByEmailAndPassword(String sql, String userEmail, String userPassword) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -62,6 +64,10 @@ public class DatabaseConnection {
         GetSearchReleaseDate,
         GetAvailableBooks,
         GetQuantityBooks,
+        InsertLentBook,     //Annika
+        UpdateLentBook,
+        RemoveLentBook,     //Annika
+        UpdateBookQty,   //Annika
     };
     public DatabaseConnection() {
 
@@ -120,6 +126,10 @@ public class DatabaseConnection {
             case GetBookISBN: return getBookISBN;
             case GetAvailableBooks: return getAvailableBooks;
             case GetQuantityBooks: return getQuantityBooks;
+            case InsertLentBook: return insertLentBook; //Annika
+            case UpdateLentBook: return updateLentBook; //Annika
+            case RemoveLentBook: return removeLentBook; //Annika
+            case UpdateBookQty: return updateBookQty;   //Annika
         }
         return null;
     }
@@ -178,6 +188,41 @@ public class DatabaseConnection {
         pstmt.setString(7, zipCode);
         pstmt.setString(8, city);
         pstmt.setString(9, previousEmail);
+        return pstmt;
+    }
+
+    //Annika
+    public PreparedStatement insertLentBooksInDatabase(String sql, int bookID, int customerID, Date lendingDate, Date returnDate) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setInt(1, bookID);
+        pstmt.setInt(2, customerID);
+        pstmt.setDate(3, (java.sql.Date) returnDate);
+        pstmt.setDate(4, (java.sql.Date) lendingDate);
+        return pstmt;
+    }
+
+    //Annika
+    public PreparedStatement updateLentBooksInDatabase(String sql, int bookID, int customerID, Date returnDate) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setDate(1, (java.sql.Date) returnDate);
+        pstmt.setInt(2, bookID);
+        pstmt.setInt(3, customerID);
+        return pstmt;
+    }
+
+    //Annika
+    public PreparedStatement removeLentBookFromDatabase(String sql, int bookID, int customerID) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setInt(1, bookID);
+        pstmt.setInt(2, customerID);
+        return pstmt;
+    }
+
+    //Annika
+    public PreparedStatement updateBookQtyInDatabase(String sql, int bookID, int bookQty) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setInt(1, bookQty);
+        pstmt.setInt(2, bookID);
         return pstmt;
     }
 
