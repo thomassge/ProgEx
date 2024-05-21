@@ -25,18 +25,24 @@ public class LendBook {
         int bookQty = book.getQty() - 1;
         insertLentBookInDB(bookID, customerID, lendingDate, returnDate);
         updateBookQtyInDB(bookID, bookQty);
+        try {
+            Manager.LoadBooks();
+            Manager.LoadPersonalBooks();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
         }
     }
 
-    public static void extendBook(Book book){
-        int bookID = book.getId();
-        int customerID = Manager.GetUser().getId();
+    public static void extendBook(Orders order) throws BookIsNotExtendableException{
 
-        Date lendingDate = Manager.GetUser().getOrderForBook(bookID).getOrderdate();
+        int bookingId = order.getBookingId();
+        Date lendingDate = order.getOrderdate();
         // Umwandlung von java.sql.Date zu java.util.Date
         java.util.Date utilLendingDate = new java.util.Date(lendingDate.getTime());
         //Date date = new Date();
-        Date returnDate = Manager.GetUser().getOrderForBook(bookID).getReturndate();
+        Date returnDate = order.getReturndate();
         // Umwandlung von java.sql.Date zu java.util.Date
         java.util.Date utilReturnDate = new java.util.Date(returnDate.getTime());
 
@@ -44,24 +50,30 @@ public class LendBook {
         //java.util.Date utilExtendingDate = new java.util.Date(extendingDate.getTime());
 
         if(!isBookExtendable(utilLendingDate, extendingDate)){
-            //TODO Buch ist nicht verlängerbar -> throw Exception
-            System.out.println("Test");
+            throw new BookIsNotExtendableException("Das Buch kann nicht verlängert werden.");
         } else {
-            updateLentBookInDB(bookID, customerID, extendingDate);
+            updateLentBookInDB(bookingId, extendingDate);
+            try {
+                Manager.LoadPersonalBooks();
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
         }
     }
 
-    public static void returnBook(Book book){
-        int bookID = book.getId();
-        int customerID = Manager.GetUser().getId();
-        int bookingId = Manager.GetUser().getOrderForBook(bookID).getBookingId();   //Annika
+    public static void returnBook(Orders order){
+        int bookId = order.getBook().getId();
+        int bookingId = order.getBookingId();
 
-        //Date lendingDate = Manager.GetUser().getOrderForBook(bookID).getOrderdate();
-
-        //Date returnDate = Manager.GetUser().getOrderForBook(bookID).getReturndate();
-        int bookQty = book.getQty() + 1;
+        int bookQty = Manager.GetBookById(bookId).getQty() + 1;
         removeLentBookInDB(bookingId);  //Annika
-        updateBookQtyInDB(bookID, bookQty);
+        updateBookQtyInDB(bookId, bookQty);
+        try {
+            Manager.LoadBooks();
+            Manager.LoadPersonalBooks();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public static void insertLentBookInDB(int bookID, int customerID, java.util.Date lendingDate, java.util.Date returnDate) {
@@ -75,10 +87,10 @@ public class LendBook {
         }
     }
 
-    public static void updateLentBookInDB(int bookID, int customerID, java.util.Date extendingDate) {
+    public static void updateLentBookInDB(int bookingId, java.util.Date extendingDate) {
         try {
             java.sql.Date sqlExtendingDate = new java.sql.Date(extendingDate.getTime());
-            PreparedStatement stmt = dbConn.updateLentBooksInDatabase(DatabaseConnection.GetCommand(DatabaseConnection.Command.UpdateLentBook), bookID, customerID, sqlExtendingDate);
+            PreparedStatement stmt = dbConn.updateLentBooksInDatabase(DatabaseConnection.GetCommand(DatabaseConnection.Command.UpdateLentBook), bookingId, sqlExtendingDate);
             dbConn.executeQueryPreparedUpdate(stmt);
         } catch (SQLException e){
             e.printStackTrace();

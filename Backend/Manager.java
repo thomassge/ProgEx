@@ -84,6 +84,11 @@ public class Manager {
 public static ArrayList<Book> GetBooks(){
         return  bookAdministration.getBooks();
 }
+
+public static Book GetBookById(int id){
+        return bookAdministration.GetBookById(id);
+}
+
 /*
    public static void UpdateBookQty(int id, int qty) {
         bookAdministration.UpdateBookQty(id, qty);

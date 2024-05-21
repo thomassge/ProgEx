@@ -35,7 +35,7 @@ public class DatabaseConnection {
     static  String getMostBorrowedBook = "SELECT Book.id, Book.title, COUNT(*) AS num_borrowed FROM Book JOIN lent_books ON Book.id = lent_books.book_id GROUP BY Book.id, Book.title ORDER BY num_borrowed DESC";
     static String getAllLentBooks = "SELECT * FROM lent_books";
     static String insertLentBook = "INSERT INTO lent_books (book_id, customer_id, deadline, lending_date) VALUES (?, ?, ?, ?)";      //Annika
-    static String updateLentBook ="UPDATE lent_books SET deadline = ? WHERE book_id = ? AND customer_id = ?"; //Annika
+    static String updateLentBook ="UPDATE lent_books SET deadline = ? WHERE booking_id = ?"; //Annika
     static String removeLentBook = "DELETE FROM lent_books WHERE booking_id = ?";      //Annika
     static String updateBookQty = "UPDATE qty SET qty = ? WHERE book_id = ?";   //Annika
     // static String getCustomersIdenticalBook = "SELECT Customer.* FROM Customer JOIN lent_books ON Customer.id = lent_books.customer_id WHERE lent_books.book_id = ?";
@@ -137,12 +137,12 @@ public class DatabaseConnection {
     public ResultSet executeQuery(Command command) throws SQLException {
         String sql = GetCommand(command);
         Statement stmt = conn.createStatement();
-        printAllColumns(stmt.executeQuery(sql));
+     //   printAllColumns(stmt.executeQuery(sql));
         return stmt.executeQuery(sql);
     }
 
     public ResultSet executeQueryPrepared(PreparedStatement stmt) throws SQLException {
-        printAllColumns(stmt.executeQuery());
+       // printAllColumns(stmt.executeQuery());
         return stmt.executeQuery();
     }
 
@@ -202,11 +202,10 @@ public class DatabaseConnection {
     }
 
     //Annika
-    public PreparedStatement updateLentBooksInDatabase(String sql, int bookID, int customerID, Date returnDate) throws SQLException {
+    public PreparedStatement updateLentBooksInDatabase(String sql, int bookingId, Date returnDate) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setDate(1, (java.sql.Date) returnDate);
-        pstmt.setInt(2, bookID);
-        pstmt.setInt(3, customerID);
+        pstmt.setInt(2, bookingId);
         return pstmt;
     }
 
