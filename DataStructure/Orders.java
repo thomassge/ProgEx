@@ -7,11 +7,9 @@ public class Orders {
 Book book;
 Date orderdate;
 Date returndate;
+int bookingId;  //Annika
 
     public Book getBook() {
-
-
-
         return book;
     }
 
@@ -33,6 +31,14 @@ Date returndate;
 
     public void setReturndate(Date returndate) {
         this.returndate = returndate;
+    }
+
+    public int getBookingId() {     //Annika
+        return bookingId;
+    }
+
+    public void setBookingId(int bookingId) {   //Annika
+        this.bookingId = bookingId;
     }
 
     public void WriteOrderInConsole() {
