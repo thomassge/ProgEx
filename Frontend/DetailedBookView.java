@@ -1,5 +1,7 @@
 package Frontend;
 
+import Backend.BookUnavailableException;
+import Backend.LendBook;
 import DataStructure.Book;
 
 import javax.swing.*;
@@ -12,12 +14,15 @@ public class DetailedBookView implements ActionListener {
     private JFrame detailedBookView;
     private final String[] rowNames = {"ID", "Title", "Author", "ISBN", "Release date", "Publisher", "Genre", "Description", "Qty"};
     private Object [][] detailedBookViewData;
+    private Book selectedBook;
 
     public DetailedBookView(Book selectedBook) {
+        this.selectedBook = selectedBook;
         initializeDetailedBookViewData(selectedBook);
         createDetailedBookTableFrame();
         createDetailedBookTable();
         createDetailedBookTableMenuBar();
+        addLendButton();
     }
 
     private void initializeDetailedBookViewData(Book selectedBook) {
@@ -82,4 +87,18 @@ public class DetailedBookView implements ActionListener {
 
         detailedBookView.add(panel);
     }
+
+    private void addLendButton() {
+        JButton lendButton = new JButton("Lend");
+        lendButton.addActionListener(e -> {
+            try {
+                LendBook.lendBook(selectedBook);
+                JOptionPane.showMessageDialog(null, "Book has been lent successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            } catch (BookUnavailableException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        detailedBookView.add(lendButton, BorderLayout.SOUTH);
+    }
+
 }
