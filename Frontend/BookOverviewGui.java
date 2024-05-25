@@ -27,11 +27,9 @@ public class BookOverviewGui implements ActionListener {
     private JTextField searchField;
     private final ArrayList<Book> books;
     private List<Orders> orders;
-//    private final Customer loggedInUser;
 
     public BookOverviewGui(ArrayList <Book> books) {
         this.books = books;
-//        this.loggedInUser = loggedInUser;
         initializeBookOverviewData(books);
         createBookOverviewFrame();
         createBookOverviewMenuBar();
@@ -121,9 +119,9 @@ private void addMouseListener() {
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 1) {
                 JTable target = (JTable) e.getSource();
-                int viewRow = target.getSelectedRow(); // Zeilenindex in der angezeigten Tabelle
+                int viewRow = target.getSelectedRow();
                 if (viewRow != -1) {
-                    int modelRow = target.convertRowIndexToModel(viewRow); // Konvertiere zum Modellindex
+                    int modelRow = target.convertRowIndexToModel(viewRow);
                     int id = Integer.parseInt(target.getModel().getValueAt(modelRow, 0).toString());
                     Book selectedBook = findBookById(id);
                     if (selectedBook != null) {
