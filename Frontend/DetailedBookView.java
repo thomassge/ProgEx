@@ -2,6 +2,7 @@ package Frontend;
 
 import Backend.BookUnavailableException;
 import Backend.LendBook;
+import Backend.Manager;
 import DataStructure.Book;
 
 import javax.swing.*;
@@ -15,14 +16,18 @@ public class DetailedBookView implements ActionListener {
     private final String[] rowNames = {"ID", "Title", "Author", "ISBN", "Release date", "Publisher", "Genre", "Description", "Qty"};
     private Object [][] detailedBookViewData;
     private Book selectedBook;
+    DefaultTableModel tableModel;
 
-    public DetailedBookView(Book selectedBook) {
+    private BookOverviewGui bookOverviewGui;
+
+    public DetailedBookView(Book selectedBook, BookOverviewGui bookOverviewGui) {
         this.selectedBook = selectedBook;
         initializeDetailedBookViewData(selectedBook);
         createDetailedBookTableFrame();
         createDetailedBookTable();
         createDetailedBookTableMenuBar();
         addLendButton();
+        this.bookOverviewGui = bookOverviewGui;
     }
 
     private void initializeDetailedBookViewData(Book selectedBook) {
@@ -70,10 +75,10 @@ public class DetailedBookView implements ActionListener {
     }
 
     private void createDetailedBookTable() {
-        JPanel panel = new JPanel(new BorderLayout());
+       JPanel panel = new JPanel(new BorderLayout());
 
         JTable defaultBookAttributes = new JTable(new DefaultTableModel(rowNames.length, 1));
-        DefaultTableModel tableModel = (DefaultTableModel) defaultBookAttributes.getModel();
+        tableModel = (DefaultTableModel) defaultBookAttributes.getModel();
         for(int i = 0; i< rowNames.length;i++){
             tableModel.setValueAt(rowNames[i], i, 0);
         }
@@ -93,6 +98,12 @@ public class DetailedBookView implements ActionListener {
         lendButton.addActionListener(e -> {
             try {
                 LendBook.lendBook(selectedBook);
+                bookOverviewGui.refreshBooks();
+                selectedBook = Manager.GetBookById(selectedBook.getId());
+                detailedBookViewData[8][0] = selectedBook.getQty();
+                tableModel.fireTableDataChanged();
+                createDetailedBookTable();
+
                 JOptionPane.showMessageDialog(null, "Book has been lent successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
             } catch (BookUnavailableException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

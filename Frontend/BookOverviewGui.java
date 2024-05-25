@@ -1,5 +1,6 @@
 package Frontend;
 
+import Backend.Manager;
 import DataStructure.Book;
 import DataStructure.Customer;
 import DataStructure.Orders;
@@ -25,8 +26,10 @@ public class BookOverviewGui implements ActionListener {
     private JMenuBar bookOverviewMenuBar;
     private JTable bookOverviewTable;
     private JTextField searchField;
-    private final ArrayList<Book> books;
+    private ArrayList<Book> books;
     private List<Orders> orders;
+
+    BookOverviewGui thisBookOverviewGui = this;
 
     public BookOverviewGui(ArrayList <Book> books) {
         this.books = books;
@@ -125,7 +128,7 @@ private void addMouseListener() {
                     int id = Integer.parseInt(target.getModel().getValueAt(modelRow, 0).toString());
                     Book selectedBook = findBookById(id);
                     if (selectedBook != null) {
-                        new DetailedBookView(selectedBook);
+                        new DetailedBookView(selectedBook, thisBookOverviewGui);
                     } else {
                         System.out.println("No book found with ID: " + id);
                     }
@@ -178,5 +181,28 @@ private void addMouseListener() {
             bookOverviewTable.setRowSorter(sorter);
         }
         ((TableRowSorter<? extends TableModel>) sorter).setRowFilter(RowFilter.regexFilter("(?i)" + searchText));
+    }
+
+    public void refreshBooks() {
+        // Fetch new books data
+        this.books = Manager.GetBooks();
+        initializeBookOverviewData(books);
+
+        // Clear existing data in the JTable
+        for (int i = 0; i < bookOverviewTable.getRowCount(); i++) {
+            for (int j = 0; j < bookOverviewTable.getColumnCount(); j++) {
+                bookOverviewTable.setValueAt(null, i, j);
+            }
+        }
+
+        // Update the JTable with new data
+        for (int i = 0; i < bookMenuData.length; i++) {
+            for (int j = 0; j < bookMenuData[i].length; j++) {
+                bookOverviewTable.setValueAt(bookMenuData[i][j], i, j);
+            }
+        }
+
+        // Repaint the table to reflect changes
+        ((AbstractTableModel) bookOverviewTable.getModel()).fireTableDataChanged();
     }
 }
