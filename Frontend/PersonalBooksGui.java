@@ -1,5 +1,6 @@
 package Frontend;
 
+import Backend.BookIsNotExtendableException;
 import Backend.LendBook;
 import Backend.Manager;
 import DataStructure.Book;
@@ -19,6 +20,7 @@ public class PersonalBooksGui {
     private JTable ordersTable;
     Customer loggedInUser = Manager.GetUser();
     private final ArrayList<Book> books;
+    private DefaultTableModel tableModel;
 
     public PersonalBooksGui(List<Orders> orders, ArrayList<Book> books) {
         this.books = books;
@@ -37,7 +39,7 @@ public class PersonalBooksGui {
     private void createPersonalBooksTable(ArrayList<Book> books) {
         String[] columnNames = {"Book Title", "Order Date", "Return Date"};
 
-        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0){
+         tableModel = new DefaultTableModel(columnNames, 0){
             @Override
             public boolean isCellEditable ( int row, int column){
             return false;
@@ -96,12 +98,36 @@ public class PersonalBooksGui {
 
         JButton extendButton = new JButton("Extend Book");
         extendButton.addActionListener(e -> {
-            LendBook.extendBook(Manager.GetUser().getOrderForBook(book.getId()));
+            try {
+                LendBook.extendBook(Manager.GetUser().getOrderForBook(book.getId()));
+                tableModel.setRowCount(0);
+                List<Orders> orders = loggedInUser.getOrders();
+                for (Orders order : orders) {
+                    Book tempBook = order.getBook();
+                    Object[] rowData = {tempBook.getTitle(), order.getOrderdate(), order.getReturndate()};
+                    tableModel.addRow(rowData);
+                }
+                tableModel.fireTableDataChanged();
+            }catch (BookIsNotExtendableException extendableException ){
+                JOptionPane.showMessageDialog(null,
+                        "The maximum extension time has been reached.",
+                        "Extension Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         JButton returnButton = new JButton("Return Book");
         returnButton.addActionListener(e -> {
             LendBook.returnBook(Manager.GetUser().getOrderForBook(book.getId()));
+            tableModel.setRowCount(0);
+            List<Orders> orders = loggedInUser.getOrders();
+            for (Orders order : orders) {
+                Book tempBook= order.getBook();
+                Object[] rowData = {tempBook.getTitle(), order.getOrderdate(), order.getReturndate()};
+                tableModel.addRow(rowData);
+            }
+            tableModel.fireTableDataChanged();
+            bookDetailsFrame.dispose();
         });
 
         JPanel panel = new JPanel();

@@ -22,8 +22,14 @@ public class TestMain {
         System.out.println("Vor Ausleihe:");
         LendBook.lendBook(book);
         Manager.GetUser().PrintPersonalBooks();
+        System.out.println();
+        LendBook.lendBook(book);
+        Manager.GetUser().PrintPersonalBooks();
+        System.out.println();
+        LendBook.lendBook(book);
+        Manager.GetUser().PrintPersonalBooks();
 
-
+        /*
             LendBook.extendBook(Manager.GetUser().getOrderForBook(book.getId()));
             System.out.println("Nach Verlängerung:");
             Manager.GetUser().PrintPersonalBooks();
@@ -33,7 +39,7 @@ public class TestMain {
         LendBook.returnBook(Manager.GetUser().getOrderForBook(book.getId()));
         System.out.println("Nach Rückgabe:");
         Manager.GetUser().PrintPersonalBooks();
-
+*/
 
 /*
         try {
