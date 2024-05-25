@@ -21,11 +21,12 @@ public class PersonalBooksGui {
     Customer loggedInUser = Manager.GetUser();
     private final ArrayList<Book> books;
     private DefaultTableModel tableModel;
-
-    public PersonalBooksGui(List<Orders> orders, ArrayList<Book> books) {
+    private BookOverviewGui bookOverviewGui;
+    public PersonalBooksGui(List<Orders> orders, ArrayList<Book> books, BookOverviewGui bookOverviewGui) {
         this.books = books;
         createPersonalBooksFrame();
         createPersonalBooksTable(books);
+        this.bookOverviewGui = bookOverviewGui;
     }
 
     private void createPersonalBooksFrame() {
@@ -128,6 +129,7 @@ public class PersonalBooksGui {
             }
             tableModel.fireTableDataChanged();
             bookDetailsFrame.dispose();
+            bookOverviewGui.refreshBooks();
         });
 
         JPanel panel = new JPanel();

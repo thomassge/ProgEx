@@ -91,7 +91,7 @@ public class BookOverviewGui implements ActionListener {
             System.out.println("Launching Account GUI");
             new AccountGui();
         } else if ("PersonalBooksGui".equals(e.getActionCommand())) {
-            new PersonalBooksGui(orders, books);
+            new PersonalBooksGui(orders, books, thisBookOverviewGui);
         } else if ("Logout".equals(e.getActionCommand())) {
             new MainGui();
         }
