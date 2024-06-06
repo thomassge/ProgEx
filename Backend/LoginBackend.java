@@ -1,19 +1,26 @@
 package Backend;
-import DataStructure.Customer;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class LoginBackend {
-   static DatabaseConnection db = new DatabaseConnection();
+    static DatabaseConnection db = new DatabaseConnection();
+
+    /**
+     * This method compares the login data with the data that is stored inside the customer database.
+     *
+     * @param userMail
+     * @param userPassword
+     * @return
+     */
 
     public static boolean checkLogin(String userMail, String userPassword) {
         try {
-            PreparedStatement stmt = db.PrepareGetCustomerByEmailAndPassword(db.getCustomerByEmailAndPassword, userMail, userPassword);
+            PreparedStatement stmt = db.prepareGetCustomerByEmailAndPassword(DatabaseConnection.getCustomerByEmailAndPassword, userMail, userPassword);
             ResultSet rs = db.executeQueryPrepared(stmt);
 
-          boolean b =  Manager.SetUser(DataProcessor.processCustomer(rs));
+            boolean b = Manager.setUser(DataProcessor.processCustomer(rs));
             if (b) {
                 return true;
             }
@@ -23,30 +30,60 @@ public class LoginBackend {
         return false;
     }
 
+    /**
+     * This method creates a new account and stores the data in the customer database.
+     *
+     * @param userName
+     * @param userFname
+     * @param userEmail
+     * @param password
+     * @param birthday
+     * @param address
+     * @param zipCode
+     * @param city
+     */
+
     public static void createAccount(String userName, String userFname, String userEmail, String password, String birthday, String address, String zipCode, String city) {
         try {
-            PreparedStatement stmt = db.PrepareCreateAccount(db.GetCommand(DatabaseConnection.Command.CreateAccount), userName, userFname, userEmail, password, birthday, address, zipCode, city);
+            PreparedStatement stmt = db.prepareCreateAccount(DatabaseConnection.getCommand(DatabaseConnection.Command.CreateAccount), userName, userFname, userEmail, password, birthday, address, zipCode, city);
             db.executeQueryPreparedUpdate(stmt);
             checkLogin(userEmail, password);
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * This method deletes an already existing account in the customer database.
+     *
+     * @param userEmail
+     * @param userPassword
+     */
 
     public static void deleteAccount(String userEmail, String userPassword) {
         try {
-            PreparedStatement stmt = db.PrepareDeleteAccount(db.GetCommand(DatabaseConnection.Command.DeleteAccount), userEmail, userPassword);
+            PreparedStatement stmt = db.prepareDeleteAccount(DatabaseConnection.getCommand(DatabaseConnection.Command.DeleteAccount), userEmail, userPassword);
             db.executeQueryPreparedUpdate(stmt);
-        } catch (SQLException e){
+        } catch (SQLException e) {
         }
     }
 
-    public static void editAccount(Customer user, String userName, String userFname, String userEmail, String password, String birthday, String address, String zip_code, String city) {
-       Manager manager = new Manager();
-       String previousEmail = manager.GetUser().geteMail();
+    /**
+     * This method edits an already existing account in the customer database.
+     *
+     * @param userName
+     * @param userFname
+     * @param userEmail
+     * @param password
+     * @param birthday
+     * @param address
+     * @param zip_code
+     * @param city
+     */
+    public static void editAccount(String userName, String userFname, String userEmail, String password, String birthday, String address, String zip_code, String city) {
+        String previousEmail = Manager.getUser().getEmail();
         try {
-            PreparedStatement stmt = db.PrepareEditAccount(db.GetCommand(DatabaseConnection.Command.EditAccount), userName, userFname, userEmail, password, birthday, address, zip_code, city, previousEmail);
+            PreparedStatement stmt = db.prepareEditAccount(DatabaseConnection.getCommand(DatabaseConnection.Command.EditAccount), userName, userFname, userEmail, password, birthday, address, zip_code, city, previousEmail);
             db.executeQueryPreparedUpdate(stmt);
         } catch (SQLException e) {
         }

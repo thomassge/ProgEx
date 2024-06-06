@@ -99,7 +99,7 @@ public class DetailedBookView implements ActionListener {
             try {
                 LendBook.lendBook(selectedBook);
                 bookOverviewGui.refreshBooks();
-                selectedBook = Manager.GetBookById(selectedBook.getId());
+                selectedBook = Manager.getBookById(selectedBook.getId());
                 detailedBookViewData[8][0] = selectedBook.getQty();
                 tableModel.fireTableDataChanged();
                 createDetailedBookTable();

@@ -1,21 +1,78 @@
 package Backend;
 
-import java.sql.*;
-import java.util.Date;
+import DataStructure.Book;
+import DataStructure.Customer;
+import DataStructure.Order;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
-import DataStructure.*;
-
+/**
+ * parses the sql resultsets so that the data can be used in the system
+ */
 public class DataProcessor {
 
-    DatabaseConnection dbConn;
+    /**
+     * processes the user's borrowed books and reads the data from the table and creates a list of orders
+     *
+     * @param rs
+     * @return a list of orders
+     * @throws SQLException
+     */
+    public static ArrayList<Order> proccesUserOrders(ResultSet rs) throws SQLException {
+        ArrayList<Order> orders = new ArrayList<Order>();
 
-
-    public DataProcessor() {
-        dbConn = new DatabaseConnection();
+        while (rs.next()) {
+            Order order = new Order();
+            int bookingId = rs.getInt("booking_id");
+            order.setBookingId(bookingId);
+            int bookid = rs.getInt("book_id");
+            order.setBook(Manager.getBooks().stream().filter(b -> b.getId() == bookid).findFirst().orElse(null));
+            Date lendingDate = rs.getDate("lending_date");
+            Date returnDate = rs.getDate("deadline");
+            order.setOrderDate(lendingDate);
+            order.setReturnDate(returnDate);
+            orders.add(order);
+        }
+        return orders;
     }
 
-    // Richtige weise um zu verarbeiten
+    /**
+     * processes the user to do this the function parses the data from the table and creates a list of orders
+     *
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
+    public static Customer processCustomer(ResultSet rs) throws SQLException {
+        Customer customer = null;
+
+        if (rs.next()) {
+            int id = rs.getInt("id");
+            String name = rs.getString("name");
+            String fname = rs.getString("fname");
+            String email = rs.getString("email");
+            String password = rs.getString("password");
+            Date birthday = rs.getDate("birthday");
+            String address = rs.getString("address");
+            String zipCode = rs.getString("zip_code");
+            String city = rs.getString("city");
+
+            customer = new Customer(id, name, fname, email, password, birthday, address, zipCode, city);
+        }
+
+        return customer;
+    }
+
+    /**
+     * processes all books therefore the method reads the data from the table and creates a list of orders
+     *
+     * @param rs
+     * @return all books in a list
+     * @throws SQLException
+     */
     public ArrayList<Book> processBooks(ResultSet rs) throws SQLException {
 
         ArrayList<Book> books = new ArrayList<>();
@@ -28,70 +85,9 @@ public class DataProcessor {
             String publisher = rs.getString("publisher");
             String genre = rs.getString("genre");
             String description = rs.getString("description");
-            int qty = rs.getInt("qty");     // Annika
-            books.add(new Book(id, title, author, isbn, releaseDate, publisher, genre, description, qty));  //Annika
+            int qty = rs.getInt("qty");
+            books.add(new Book(id, title, author, isbn, releaseDate, publisher, genre, description, qty));
         }
         return books;
     }
-
-    public static ArrayList<Orders> ProccesUserOrders(ResultSet rs) throws SQLException {
-        ArrayList<Orders> orders = new ArrayList<Orders>();
-
-        while (rs.next()) {
-            Orders order = new Orders();
-            int bookingId = rs.getInt("booking_id");    //Annika
-            order.setBookingId(bookingId);  //Annika
-            int bookid = rs.getInt("book_id");
-            order.setBook(Manager.GetBooks().stream().filter(b -> b.getId() == bookid).findFirst().orElse(null));
-            Date lendingDate = rs.getDate("lending_date");
-            Date returnDate = rs.getDate("deadline");
-            order.setOrderdate(lendingDate);
-            order.setReturndate(returnDate);
-            orders.add(order);
-        }
-
-
-        return orders;
-    }
-
-
-    public static Customer processCustomer(ResultSet rs) throws SQLException {
-        Customer customer = null;
-        System.out.print("vor proccess: ");
-        System.out.println(rs == null);
-
-        if (rs.next()) {
-            int id = rs.getInt("id");
-            String name = rs.getString("name");
-            String fname = rs.getString("fname");
-            String email = rs.getString("email");
-            String password = rs.getString("password");
-            // Date birthday = new Date();//rs.getDate("birthday");
-            Date birthday = rs.getDate("birthday");
-            String address = rs.getString("address");
-            String zipCode = rs.getString("zip_code");
-            String city = rs.getString("city");
-
-            customer = new Customer(id, name, fname, email, password, birthday, address, zipCode, city);
-        }
-        System.out.print("nach proccess: ");
-        System.out.println(customer == null);
-        return customer;
-    }
-
-    public String processUserEmail(ResultSet rs) throws SQLException {
-        if (rs.next()) {
-
-            return rs.getString("email");
-        }
-        return null;
-    }
-
-    public String processUserPassword(ResultSet rs) throws SQLException {
-        if (rs.next()) {
-            return rs.getString("password");
-        }
-        return null;
-    }
-
 }

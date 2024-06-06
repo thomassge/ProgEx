@@ -3,97 +3,88 @@ package Backend;
 import DataStructure.Book;
 import DataStructure.BookAdministration;
 import DataStructure.Customer;
-import DataStructure.Orders;
+import DataStructure.Order;
 
-import java.util.ArrayList;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
+/**
+ * Used to provide a centralized management facility to control basic backend functions
+ */
 public class Manager {
 
-   static DatabaseConnection dbConn;
-   static DataProcessor processor;
+    static DatabaseConnection dbConn;
+    static DataProcessor processor;
+    static Customer user;
+    static BookAdministration bookAdministration;
 
-   static Customer user;
-  static  BookAdministration bookAdministration;
-    LoginBackend loginBackend;
-
-    public static void main(String[] args) {
-        Manager manager = new Manager();
-
-            bookAdministration.DisplayBooksInConsole();
-            LoginBackend.checkLogin("jane.smith@example.com", "password456");
-            user.PrintPersonalBooks();
-
-    }
-
-
+    /**
+     * The class provides various static management methods to access the books from anywhere without special initialization.
+     * Initializes the multiple classes which it uses and then loads all books into the system.
+     */
     public Manager() {
 
         dbConn = new DatabaseConnection();
         processor = new DataProcessor();
-        loginBackend = new LoginBackend();
         bookAdministration = new BookAdministration();
 
         try {
-            LoadBooks();
-        }catch (SQLException e){
+            loadBooks();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
     }
 
-
-    public static void LoadBooks() throws SQLException {
-       bookAdministration.SetBooks(processor.processBooks(dbConn.executeQuery(DatabaseConnection.Command.GetAllBooks)));
+    /**
+     * Loads and saves books from the database.
+     * uses the connection to the database to load the books and lets the bookprocessor process and save them afterwards.
+     *
+     * @throws SQLException
+     */
+    public static void loadBooks() throws SQLException {
+        bookAdministration.setBooks(processor.processBooks(dbConn.executeQuery(DatabaseConnection.Command.GetAllBooks)));
     }
 
-    public static void LoadPersonalBooks() throws SQLException{
+    /**
+     * Loads and saves the user's books from the database.
+     * uses the connection to the database to load the books of the logged in user and lets the bookprocessor process and save them afterwards.
+     *
+     * @throws SQLException
+     */
+    public static void loadPersonalBooks() throws SQLException {
         int id = user.getId();
-        ArrayList<Orders> orders = processor.ProccesUserOrders( dbConn.executeQueryPrepared(dbConn.PrepareWith1Int(DatabaseConnection.GetCommand(DatabaseConnection.Command.GetBooksFromUser),id)));
+        ArrayList<Order> orders = DataProcessor.proccesUserOrders(dbConn.executeQueryPrepared(dbConn.prepareWith1Int(DatabaseConnection.getCommand(DatabaseConnection.Command.GetBooksFromUser), id)));
         user.setOrders(orders);
     }
 
-
-
-    public static boolean SetUser(Customer customer){
+    /**
+     * Sets the user and then loads the user's borrowed books into the system
+     *
+     * @param customer
+     * @return
+     */
+    public static boolean setUser(Customer customer) {
         user = customer;
         try {
-            LoadPersonalBooks();
-        }catch (SQLException e){
+            loadPersonalBooks();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return customer !=null;
+        return customer != null;
     }
 
-    public static Customer GetUser(){
+    public static Customer getUser() {
         return user;
     }
 
-    public static void WriteUser(){
-       System.out.println("teste");
-        System.out.println(user.geteMail());
-        System.out.println(user.getId());
-
+    public static ArrayList<Book> getBooks() {
+        return bookAdministration.getBooks();
     }
 
-    public static ArrayList<Orders> GetPersonalBooks(){
-       return user.getOrders();
+    public static Book getBookById(int id) {
+        return bookAdministration.getBookById(id);
     }
-
-public static ArrayList<Book> GetBooks(){
-        return  bookAdministration.getBooks();
-}
-
-public static Book GetBookById(int id){
-        return bookAdministration.GetBookById(id);
-}
-
-/*
-   public static void UpdateBookQty(int id, int qty) {
-        bookAdministration.UpdateBookQty(id, qty);
-    }
-*/
 }
 
 

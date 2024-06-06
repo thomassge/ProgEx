@@ -9,7 +9,7 @@ import java.awt.*;
 
 public class AccountGui {
 
-    Customer loggedInUser = Manager.GetUser();
+    Customer loggedInUser = Manager.getUser();
     JFrame accountFrame = new JFrame();
 
     public AccountGui() {
@@ -33,10 +33,10 @@ public class AccountGui {
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.add(new JLabel("Name: " + loggedInUser.getName()));
         infoPanel.add(new JLabel("Surname: " + loggedInUser.getFname()));
-        infoPanel.add(new JLabel("Email: " + loggedInUser.geteMail()));
+        infoPanel.add(new JLabel("Email: " + loggedInUser.getEmail()));
         infoPanel.add(new JLabel("Birthday: " + loggedInUser.getBirthday()));
         infoPanel.add(new JLabel("Address: " + loggedInUser.getAddress()));
-        infoPanel.add(new JLabel("Zip Code: " + loggedInUser.getZip_code()));
+        infoPanel.add(new JLabel("Zip Code: " + loggedInUser.getZipCode()));
         infoPanel.add(new JLabel("City: " + loggedInUser.getCity()));
 
         JButton editButton = new JButton("Edit Information");
@@ -69,10 +69,10 @@ public class AccountGui {
 
         JTextField nameField = createLabeledTextField(panel, "Name", 20, loggedInUser.getName());
         JTextField firstNameField = createLabeledTextField(panel, "First Name", 50, loggedInUser.getFname());
-        JTextField emailField = createLabeledTextField(panel, "Email", 80, loggedInUser.geteMail());
+        JTextField emailField = createLabeledTextField(panel, "Email", 80, loggedInUser.getEmail());
         JTextField birthdayField = createLabeledTextField(panel, "Birthday", 110, loggedInUser.getBirthday().toString());
         JTextField addressField = createLabeledTextField(panel, "Address", 140, loggedInUser.getAddress());
-        JTextField zipCodeField = createLabeledTextField(panel, "Zip Code", 170, loggedInUser.getZip_code());
+        JTextField zipCodeField = createLabeledTextField(panel, "Zip Code", 170, loggedInUser.getZipCode());
         JTextField cityField = createLabeledTextField(panel, "City", 200, loggedInUser.getCity());
 
         JButton saveButton = new JButton("Save");
@@ -80,7 +80,7 @@ public class AccountGui {
         saveButton.addActionListener(e -> {
             loggedInUser.setName(nameField.getText());
             loggedInUser.setFname(firstNameField.getText());
-            loggedInUser.seteMail(emailField.getText());
+            loggedInUser.setEmail(emailField.getText());
 
             String birthdayText = birthdayField.getText();
             if (birthdayText.matches("\\d{4}-\\d{2}-\\d{2}")) {
@@ -91,11 +91,11 @@ public class AccountGui {
             }
 
             loggedInUser.setAddress(addressField.getText());
-            loggedInUser.setZip_code(zipCodeField.getText());
+            loggedInUser.setZipCode(zipCodeField.getText());
             loggedInUser.setCity(cityField.getText());
             editFrame.dispose();
-            LoginBackend.editAccount(loggedInUser, loggedInUser.getName(), loggedInUser.getFname(), loggedInUser.geteMail(),
-                                    loggedInUser.getPassword(), birthdayText, loggedInUser.getAddress(), loggedInUser.getZip_code(), loggedInUser.getCity());
+            LoginBackend.editAccount(loggedInUser.getName(), loggedInUser.getFname(), loggedInUser.getEmail(),
+                                    loggedInUser.getPassword(), birthdayText, loggedInUser.getAddress(), loggedInUser.getZipCode(), loggedInUser.getCity());
             accountFrame.dispose();
             new AccountGui();
         });

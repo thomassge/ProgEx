@@ -2,8 +2,7 @@ package Frontend;
 
 import Backend.Manager;
 import DataStructure.Book;
-import DataStructure.Customer;
-import DataStructure.Orders;
+import DataStructure.Order;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -27,7 +26,7 @@ public class BookOverviewGui implements ActionListener {
     private JTable bookOverviewTable;
     private JTextField searchField;
     private ArrayList<Book> books;
-    private List<Orders> orders;
+    private List<Order> orders;
 
     BookOverviewGui thisBookOverviewGui = this;
 
@@ -185,7 +184,7 @@ private void addMouseListener() {
 
     public void refreshBooks() {
         // Fetch new books data
-        this.books = Manager.GetBooks();
+        this.books = Manager.getBooks();
         initializeBookOverviewData(books);
 
         // Clear existing data in the JTable

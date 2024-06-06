@@ -3,7 +3,6 @@ package Frontend;
 import Backend.LoginBackend;
 import Backend.Manager;
 import DataStructure.Book;
-import DataStructure.Customer;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -25,7 +24,7 @@ public class MainGui {
 
 
 
-            books = Manager.GetBooks();
+            books = Manager.getBooks();
             createMainGuiFrame();
             createMainGuiLayout();
 
