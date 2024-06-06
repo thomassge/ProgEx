@@ -1,39 +1,37 @@
 package DataStructure;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Date;
+
+/**
+ * The Customer class represents a customer in the program.
+ */
 public class Customer {
-int id;
-String name;
-String fname;
-String eMail;
-String password;
-Date birthday;
-String address;
-String zip_code;
-String city;
-ArrayList<Orders> orders;
+    int id;
+    String name;
+    String fname;
+    String email;
+    String password;
+    Date birthday;
+    String address;
+    String zipCode;
+    String city;
+    ArrayList<Order> orders;
 
     public Customer(int id, String name, String fname, String email, String password, Date birthday, String address, String zipCode, String city) {
         this.id = id;
         this.name = name;
         this.fname = fname;
-        this.eMail = email;
+        this.email = email;
         this.password = password;
         this.birthday = birthday;
         this.address = address;
-        this.zip_code = zipCode;
+        this.zipCode = zipCode;
         this.city = city;
     }
 
-
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -52,20 +50,16 @@ ArrayList<Orders> orders;
         this.fname = fname;
     }
 
-    public String geteMail() {
-        return eMail;
+    public String getEmail() {
+        return email;
     }
 
-    public void seteMail(String eMail) {
-        this.eMail = eMail;
+    public void setEmail(String eMail) {
+        this.email = eMail;
     }
 
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public Date getBirthday() {
@@ -84,12 +78,12 @@ ArrayList<Orders> orders;
         this.address = address;
     }
 
-    public String getZip_code() {
-        return zip_code;
+    public String getZipCode() {
+        return zipCode;
     }
 
-    public void setZip_code(String zip_code) {
-        this.zip_code = zip_code;
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
     }
 
     public String getCity() {
@@ -100,19 +94,19 @@ ArrayList<Orders> orders;
         this.city = city;
     }
 
-    public ArrayList<Orders> getOrders() {
+    public ArrayList<Order> getOrders() {
         return orders;
     }
 
-    public void setOrders(ArrayList<Orders> orders) {
+    public void setOrders(ArrayList<Order> orders) {
         this.orders = orders;
 
     }
 
-    public Orders getOrderForBook(int bookId) {
-        ArrayList<Orders> allOrdersforBook = new ArrayList<>();
+    public Order getOrderForBook(int bookId) {
+        ArrayList<Order> allOrdersforBook = new ArrayList<>();
 
-        for (Orders order : orders) {
+        for (Order order : orders) {
             if (order.getBook().getId() == bookId) {
                 allOrdersforBook.add(order);
             }
@@ -121,30 +115,13 @@ ArrayList<Orders> orders;
         return getOrderWithTheEarliestLendingDate(allOrdersforBook);
     }
 
-    private Orders getOrderWithTheEarliestLendingDate(ArrayList<Orders> allOrdersforBook) {
-        Orders orderWithEarliestLendingDate = allOrdersforBook.getFirst();
-        for (Orders order : allOrdersforBook) {
-            if (order.getOrderdate().before(orderWithEarliestLendingDate.getOrderdate())) {
+    private Order getOrderWithTheEarliestLendingDate(ArrayList<Order> allOrdersforBook) {
+        Order orderWithEarliestLendingDate = allOrdersforBook.getFirst();
+        for (Order order : allOrdersforBook) {
+            if (order.getOrderDate().before(orderWithEarliestLendingDate.getOrderDate())) {
                 orderWithEarliestLendingDate = order;
             }
         }
         return orderWithEarliestLendingDate;
     }
-
-    /*
-        public Orders getOrderForBook(int bookId) {
-            for (Orders order : orders) {
-                if (order.getBook().getId() == bookId) {
-                    return order;
-                }
-            }
-            return null;
-        }
-    */
-    public void PrintPersonalBooks(){
-      for(Orders o : orders){
-         o.WriteOrderInConsole();
-      }
-    }
-
 }

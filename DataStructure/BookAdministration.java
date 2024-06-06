@@ -1,8 +1,10 @@
 package DataStructure;
 
 import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * The BookAdministration class manages a collection of books in the program.
+ */
 public class BookAdministration {
 
     ArrayList<Book> books = new ArrayList<Book>();
@@ -12,39 +14,16 @@ public class BookAdministration {
         return books;
     }
 
-    public Book GetBookById(int id){
-        for(Book book : books){
-            if(book.getId() == id){
+    public void setBooks(ArrayList<Book> books) {
+        this.books = books;
+    }
+
+    public Book getBookById(int id) {
+        for (Book book : books) {
+            if (book.getId() == id) {
                 return book;
             }
         }
         return null;
     }
-
-    public void SetBooks(ArrayList<Book> books) {
-        this.books = books;
-    }
-
-    public void AddBook(Book book){
-        books.add(book);
-    }
-
-    public void RemoveBook(Book book){
-        books.remove(book);
-    }
-
-    public void ClearBooks(){
-        books.clear();
-    }
-
-    public void DisplayBooksInConsole(){
-        System.out.println("Books:");
-        System.out.println(books.size());
-        for(Book book : books){
-            System.out.println(book.toString());
-        }
-    }
-
-
-
 }

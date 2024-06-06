@@ -5,7 +5,7 @@ import Backend.LendBook;
 import Backend.Manager;
 import DataStructure.Book;
 import DataStructure.Customer;
-import DataStructure.Orders;
+import DataStructure.Order;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -18,11 +18,11 @@ import java.util.List;
 public class PersonalBooksGui {
     private JFrame PersonalBooksFrame;
     private JTable ordersTable;
-    Customer loggedInUser = Manager.GetUser();
+    Customer loggedInUser = Manager.getUser();
     private final ArrayList<Book> books;
     private DefaultTableModel tableModel;
     private BookOverviewGui bookOverviewGui;
-    public PersonalBooksGui(List<Orders> orders, ArrayList<Book> books, BookOverviewGui bookOverviewGui) {
+    public PersonalBooksGui(List<Order> orders, ArrayList<Book> books, BookOverviewGui bookOverviewGui) {
         this.books = books;
         createPersonalBooksFrame();
         createPersonalBooksTable(books);
@@ -30,7 +30,7 @@ public class PersonalBooksGui {
     }
 
     private void createPersonalBooksFrame() {
-        PersonalBooksFrame = new JFrame("Personal Orders");
+        PersonalBooksFrame = new JFrame("Personal Order");
         PersonalBooksFrame.setLayout(new BorderLayout());
         PersonalBooksFrame.setSize(600, 400);
         PersonalBooksFrame.setLocationRelativeTo(null);
@@ -47,10 +47,10 @@ public class PersonalBooksGui {
         }
         };
 
-        List<Orders> orders = loggedInUser.getOrders();
-        for (Orders order : orders) {
+        List<Order> orders = loggedInUser.getOrders();
+        for (Order order : orders) {
             Book book= order.getBook();
-            Object[] rowData = {book.getTitle(), order.getOrderdate(), order.getReturndate()};
+            Object[] rowData = {book.getTitle(), order.getOrderDate(), order.getReturnDate()};
             tableModel.addRow(rowData);
         }
 
@@ -100,12 +100,12 @@ public class PersonalBooksGui {
         JButton extendButton = new JButton("Extend Book");
         extendButton.addActionListener(e -> {
             try {
-                LendBook.extendBook(Manager.GetUser().getOrderForBook(book.getId()));
+                LendBook.extendBook(Manager.getUser().getOrderForBook(book.getId()));
                 tableModel.setRowCount(0);
-                List<Orders> orders = loggedInUser.getOrders();
-                for (Orders order : orders) {
+                List<Order> orders = loggedInUser.getOrders();
+                for (Order order : orders) {
                     Book tempBook = order.getBook();
-                    Object[] rowData = {tempBook.getTitle(), order.getOrderdate(), order.getReturndate()};
+                    Object[] rowData = {tempBook.getTitle(), order.getOrderDate(), order.getReturnDate()};
                     tableModel.addRow(rowData);
                 }
                 tableModel.fireTableDataChanged();
@@ -119,12 +119,12 @@ public class PersonalBooksGui {
 
         JButton returnButton = new JButton("Return Book");
         returnButton.addActionListener(e -> {
-            LendBook.returnBook(Manager.GetUser().getOrderForBook(book.getId()));
+            LendBook.returnBook(Manager.getUser().getOrderForBook(book.getId()));
             tableModel.setRowCount(0);
-            List<Orders> orders = loggedInUser.getOrders();
-            for (Orders order : orders) {
+            List<Order> orders = loggedInUser.getOrders();
+            for (Order order : orders) {
                 Book tempBook= order.getBook();
-                Object[] rowData = {tempBook.getTitle(), order.getOrderdate(), order.getReturndate()};
+                Object[] rowData = {tempBook.getTitle(), order.getOrderDate(), order.getReturnDate()};
                 tableModel.addRow(rowData);
             }
             tableModel.fireTableDataChanged();
