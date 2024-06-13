@@ -18,16 +18,11 @@ public class MainGui {
     private final JFrame deleteFrame = new JFrame();
     private JFrame frame;
     private ArrayList<Book> books;
-    //private Customer loggedInUser;
 
     public MainGui() {
-
-
-
-            books = Manager.getBooks();
-            createMainGuiFrame();
-            createMainGuiLayout();
-
+        books = Manager.getBooks();
+        createMainGuiFrame();
+        createMainGuiLayout();
     }
 
     private void createMainGuiFrame() {
@@ -51,25 +46,24 @@ public class MainGui {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         mainGuiFrame.setVisible(true);
     }
 
     private void createMainGuiLayout() {
-        JPanel flowPanel = new JPanel(new FlowLayout());
-        addButtonToPanel(flowPanel, "Log In", this::createLoginFrame);
-        addButtonToPanel(flowPanel, "Create Account", this::createAccountFrame);
-        addButtonToPanel(flowPanel, "Delete Account", this::deleteAccountFrame);
-        mainGuiFrame.add(flowPanel, BorderLayout.SOUTH);
+        JPanel MainGuiPanel = new JPanel(new FlowLayout());
+        addButtonToPanel(MainGuiPanel, "Log In", this::LoginFrame);
+        addButtonToPanel(MainGuiPanel, "Create Account", this::createAccountFrame);
+        addButtonToPanel(MainGuiPanel, "Delete Account", this::deleteAccountFrame);
+        mainGuiFrame.add(MainGuiPanel, BorderLayout.SOUTH);
     }
 
     private void addButtonToPanel(JPanel panel, String buttonText, Runnable action) {
-        JButton button = new JButton(buttonText);
-        button.addActionListener(e -> action.run());
-        panel.add(button);
+        JButton MainGuiButtons = new JButton(buttonText);
+        MainGuiButtons.addActionListener(e -> action.run());
+        panel.add(MainGuiButtons);
     }
 
-    private void createLoginFrame() {
+    private void LoginFrame() {
         createFrame("Login", "login");
     }
 
@@ -81,34 +75,6 @@ public class MainGui {
         createFrame("Delete Account", "delete");
     }
 
-    private boolean validateInputFields(JTextField emailTextField, JPasswordField passwordTextField, JTextField nameTextField,
-                                        JTextField fnameTextField, JTextField birthdayTextField, JTextField addressTextField, JTextField zipCodeTextField, JTextField cityTextField) {
-        if (emailTextField.getText().isEmpty() || passwordTextField.getPassword().length == 0 || nameTextField.getText().isEmpty() ||
-                fnameTextField.getText().isEmpty() || birthdayTextField.getText().isEmpty() || addressTextField.getText().isEmpty() ||
-                zipCodeTextField.getText().isEmpty() || cityTextField.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Please fill in all fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
-        Pattern pattern = Pattern.compile(emailRegex);
-        Matcher matcher = pattern.matcher(emailTextField.getText());
-        if (!matcher.matches()) {
-            JOptionPane.showMessageDialog(null, "Please enter a valid email.", "Input Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        String birthdayRegex = "^\\d{4}-\\d{2}-\\d{2}$";
-        pattern = Pattern.compile(birthdayRegex);
-        matcher = pattern.matcher(birthdayTextField.getText());
-        if (!matcher.matches()) {
-            JOptionPane.showMessageDialog(null, "Please enter a valid birthday (dd.mm.yyyy).", "Input Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        return true;
-    }
-
     private void createFrame(String frameTitle, String action) {
         frame = new JFrame(frameTitle);
         frame.setSize(300, 200);
@@ -118,11 +84,9 @@ public class MainGui {
         }
 
         frame.setLocationRelativeTo(null);
-
         JPanel panel = new JPanel();
         frame.add(panel);
         placeComponents(panel, action);
-
         frame.setVisible(true);
     }
 
@@ -151,19 +115,9 @@ public class MainGui {
         }
     }
 
-    private JTextField createLabeledTextField(JPanel panel, String labelText, int y) {
-        JLabel label = createLabel(labelText, y);
-        panel.add(label);
-
-        JTextField textField = createTextField(y);
-        panel.add(textField);
-
-        return textField;
-    }
-
     private JPasswordField createLabeledPasswordField(JPanel panel) {
-        JLabel label = createLabel("Password", 50);
-        panel.add(label);
+        JLabel passwordlabel = createLabel("Password", 50);
+        panel.add(passwordlabel);
 
         JPasswordField passwordField = createPasswordField();
         panel.add(passwordField);
@@ -171,8 +125,37 @@ public class MainGui {
         return passwordField;
     }
 
-    private void addActionToCreateButton(JButton actionButton, JTextField emailTextField, JPasswordField passwordTextField, JTextField nameTextField,
-                                         JTextField fnameTextField, JTextField birthdayTextField, JTextField addressTextField, JTextField zipCodeTextField, JTextField cityTextField) {
+    private JPasswordField createPasswordField() {
+        JPasswordField passwordField = new JPasswordField(20);
+        passwordField.setBounds(100, 50, 165, 25);
+        return passwordField;
+    }
+
+    private JTextField createLabeledTextField(JPanel panel, String labelText, int y) {
+        JLabel createAccountLabel = createLabel(labelText, y);
+        panel.add(createAccountLabel);
+
+        JTextField textField = createTextField(y);
+        panel.add(textField);
+
+        return textField;
+    }
+
+    private JLabel createLabel(String text, int y) {
+        JLabel label = new JLabel(text);
+        label.setBounds(10, y, 80, 25);
+        return label;
+    }
+
+    private JTextField createTextField(int y) {
+        JTextField createAccountTextField = new JTextField(20);
+        createAccountTextField.setBounds(100, y, 165, 25);
+        return createAccountTextField;
+    }
+
+    private void addActionToCreateButton(JButton actionButton, JTextField emailTextField, JPasswordField passwordTextField,
+                                         JTextField nameTextField, JTextField fnameTextField, JTextField birthdayTextField,
+                                         JTextField addressTextField, JTextField zipCodeTextField, JTextField cityTextField){
         actionButton.addActionListener(e -> {
             if(validateInputFields(emailTextField, passwordTextField, nameTextField, fnameTextField,
                                     birthdayTextField, addressTextField, zipCodeTextField, cityTextField)) {
@@ -190,22 +173,31 @@ public class MainGui {
         });
     }
 
-    private JLabel createLabel(String text, int y) {
-        JLabel label = new JLabel(text);
-        label.setBounds(10, y, 80, 25);
-        return label;
-    }
+    private boolean validateInputFields(JTextField emailTextField, JPasswordField passwordTextField, JTextField nameTextField,
+                                        JTextField fnameTextField, JTextField birthdayTextField, JTextField addressTextField, JTextField zipCodeTextField, JTextField cityTextField) {
+        if (emailTextField.getText().isEmpty() || passwordTextField.getPassword().length == 0 || nameTextField.getText().isEmpty() ||
+                fnameTextField.getText().isEmpty() || birthdayTextField.getText().isEmpty() || addressTextField.getText().isEmpty() ||
+                zipCodeTextField.getText().isEmpty() || cityTextField.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
 
-    private JTextField createTextField(int y) {
-        JTextField textField = new JTextField(20);
-        textField.setBounds(100, y, 165, 25);
-        return textField;
-    }
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(emailTextField.getText());
+        if (!matcher.matches()) {
+            JOptionPane.showMessageDialog(null, "Please enter a valid email.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
 
-    private JPasswordField createPasswordField() {
-        JPasswordField passwordField = new JPasswordField(20);
-        passwordField.setBounds(100, 50, 165, 25);
-        return passwordField;
+        String birthdayRegex = "^\\d{4}-\\d{2}-\\d{2}$";
+        pattern = Pattern.compile(birthdayRegex);
+        matcher = pattern.matcher(birthdayTextField.getText());
+        if (!matcher.matches()) {
+            JOptionPane.showMessageDialog(null, "Please enter a valid birthday (dd.mm.yyyy).", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
     }
 
     private void performAction(String action, JTextField userText, JPasswordField passwordText) {

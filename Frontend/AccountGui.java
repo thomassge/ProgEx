@@ -8,20 +8,12 @@ import javax.swing.*;
 import java.awt.*;
 
 public class AccountGui {
-
     Customer loggedInUser = Manager.getUser();
     JFrame accountFrame = new JFrame();
 
     public AccountGui() {
-        try {
-            createAccountFrame();
-            System.out.println("Account GUI has been initialized.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Error initializing Account GUI: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        createAccountFrame();
     }
-
 
     private void createAccountFrame() {
         accountFrame = new JFrame("Account Information");
@@ -39,9 +31,9 @@ public class AccountGui {
         infoPanel.add(new JLabel("Zip Code: " + loggedInUser.getZipCode()));
         infoPanel.add(new JLabel("City: " + loggedInUser.getCity()));
 
-        JButton editButton = new JButton("Edit Information");
-        editButton.setBounds(100, 265, 80, 25);
-        editButton.addActionListener(e -> openEditWindow());
+        JButton AccountEditButton = new JButton("Edit Information");
+        AccountEditButton.setBounds(100, 265, 80, 25);
+        AccountEditButton.addActionListener(e -> openEditWindow());
 
         JButton logoutButton = new JButton("Logout");
         logoutButton.setBounds(10, 265, 80, 25);
@@ -51,7 +43,7 @@ public class AccountGui {
         });
         JPanel buttonPanel = new JPanel(new FlowLayout());
 
-        buttonPanel.add(editButton);
+        buttonPanel.add(AccountEditButton);
         buttonPanel.add(logoutButton);
         accountFrame.add(buttonPanel, BorderLayout.SOUTH);
         accountFrame.add(infoPanel, BorderLayout.CENTER);
@@ -108,6 +100,7 @@ public class AccountGui {
 
         editFrame.setVisible(true);
     }
+
     private JTextField createLabeledTextField(JPanel panel, String labelText, int y, String text) {
         JLabel label = new JLabel(labelText);
         label.setBounds(10, y, 80, 25);

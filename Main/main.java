@@ -4,12 +4,16 @@ import Backend.Manager;
 import Frontend.MainGui;
 
 import javax.swing.*;
-
+/**
+ * Programming Exercises Project 2024
+ * @author Sara Abassi
+ * @author Tim Bornemann
+ * @author Eyüp Korkmaz
+ * @author Thomas Levantis
+ * @author Annika Zoe Schäffler
+ * @author Finn Schäffler
+ */
 public class main {
-
-//Programming Exercises Project 2024 
-//Group members who participated in creating the Project: Sara Abassi, Tim Bornemann, Eyüp Korkmaz, Thomas Levantis, Annika Zoe Schäffler, Finn Schäffler
-
     /**
      * Starts the application
      *

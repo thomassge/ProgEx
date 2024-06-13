@@ -16,28 +16,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersonalBooksGui {
-    private JFrame PersonalBooksFrame;
-    private JTable ordersTable;
-    Customer loggedInUser = Manager.getUser();
     private final ArrayList<Book> books;
+    private final BookOverviewGui bookOverviewGui;
+    private JFrame personalBooksFrame;
+    private JTable ordersTable;
     private DefaultTableModel tableModel;
-    private BookOverviewGui bookOverviewGui;
-    public PersonalBooksGui(List<Order> orders, ArrayList<Book> books, BookOverviewGui bookOverviewGui) {
+    Customer loggedInUser = Manager.getUser();
+
+    public PersonalBooksGui(ArrayList<Book> books, BookOverviewGui bookOverviewGui) {
         this.books = books;
         createPersonalBooksFrame();
-        createPersonalBooksTable(books);
+        createPersonalBooksTable();
         this.bookOverviewGui = bookOverviewGui;
     }
 
     private void createPersonalBooksFrame() {
-        PersonalBooksFrame = new JFrame("Personal Order");
-        PersonalBooksFrame.setLayout(new BorderLayout());
-        PersonalBooksFrame.setSize(600, 400);
-        PersonalBooksFrame.setLocationRelativeTo(null);
-        PersonalBooksFrame.setVisible(true);
+        personalBooksFrame = new JFrame("Personal Order");
+        personalBooksFrame.setLayout(new BorderLayout());
+        personalBooksFrame.setSize(600, 400);
+        personalBooksFrame.setLocationRelativeTo(null);
+        personalBooksFrame.setVisible(true);
     }
 
-    private void createPersonalBooksTable(ArrayList<Book> books) {
+    private void createPersonalBooksTable() {
         String[] columnNames = {"Book Title", "Order Date", "Return Date"};
 
          tableModel = new DefaultTableModel(columnNames, 0){
@@ -56,7 +57,7 @@ public class PersonalBooksGui {
 
         ordersTable = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(ordersTable);
-        PersonalBooksFrame.add(scrollPane, BorderLayout.CENTER);
+        personalBooksFrame.add(scrollPane, BorderLayout.CENTER);
 
         addMouseListener();
     }
@@ -73,7 +74,7 @@ public class PersonalBooksGui {
                         String title = target.getModel().getValueAt(modelRow, 0).toString();
                         Book selectedBook = findBookByTitle(title);
                         if (selectedBook != null) {
-                            createBookDetailsFrame(selectedBook);
+                            createExtendReturnFrame(selectedBook);
                         } else {
                             System.out.println("No book found with ID: " + title);
                         }
@@ -92,24 +93,17 @@ public class PersonalBooksGui {
         return null;
     }
 
-    private void createBookDetailsFrame(Book book) {
-        JFrame bookDetailsFrame = new JFrame("Book Details");
-        bookDetailsFrame.setSize(200, 200);
-        bookDetailsFrame.setLocationRelativeTo(null);
+    private void createExtendReturnFrame(Book book) {
+        JFrame extendReturnFrame = new JFrame("Book Details");
+        extendReturnFrame.setSize(200, 200);
+        extendReturnFrame.setLocationRelativeTo(null);
 
         JButton extendButton = new JButton("Extend Book");
         extendButton.addActionListener(e -> {
             try {
                 LendBook.extendBook(Manager.getUser().getOrderForBook(book.getId()));
-                tableModel.setRowCount(0);
-                List<Order> orders = loggedInUser.getOrders();
-                for (Order order : orders) {
-                    Book tempBook = order.getBook();
-                    Object[] rowData = {tempBook.getTitle(), order.getOrderDate(), order.getReturnDate()};
-                    tableModel.addRow(rowData);
-                }
-                tableModel.fireTableDataChanged();
-            }catch (BookIsNotExtendableException extendableException ){
+                updateTable();
+            } catch (BookIsNotExtendableException extendableException) {
                 JOptionPane.showMessageDialog(null,
                         "The maximum extension time has been reached.",
                         "Extension Error",
@@ -120,23 +114,27 @@ public class PersonalBooksGui {
         JButton returnButton = new JButton("Return Book");
         returnButton.addActionListener(e -> {
             LendBook.returnBook(Manager.getUser().getOrderForBook(book.getId()));
-            tableModel.setRowCount(0);
-            List<Order> orders = loggedInUser.getOrders();
-            for (Order order : orders) {
-                Book tempBook= order.getBook();
-                Object[] rowData = {tempBook.getTitle(), order.getOrderDate(), order.getReturnDate()};
-                tableModel.addRow(rowData);
-            }
-            tableModel.fireTableDataChanged();
-            bookDetailsFrame.dispose();
+            extendReturnFrame.dispose();
             bookOverviewGui.refreshBooks();
+            updateTable();
         });
 
         JPanel panel = new JPanel();
         panel.add(extendButton);
         panel.add(returnButton);
 
-        bookDetailsFrame.add(panel);
-        bookDetailsFrame.setVisible(true);
+        extendReturnFrame.add(panel);
+        extendReturnFrame.setVisible(true);
+    }
+
+    private void updateTable() {
+        tableModel.setRowCount(0);
+        List<Order> orders = loggedInUser.getOrders();
+        for (Order order : orders) {
+            Book tempBook = order.getBook();
+            Object[] rowData = {tempBook.getTitle(), order.getOrderDate(), order.getReturnDate()};
+            tableModel.addRow(rowData);
+        }
+        tableModel.fireTableDataChanged();
     }
 }

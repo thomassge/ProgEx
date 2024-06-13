@@ -2,7 +2,6 @@ package Frontend;
 
 import Backend.Manager;
 import DataStructure.Book;
-import DataStructure.Order;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -14,21 +13,18 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.List;
 
 public class BookOverviewGui implements ActionListener {
 
-    private JFrame bookOverviewFrame;
     private final String[] columnNames = {"ID", "Title", "Author", "Genre", "Quantity"};
     private final int[] columnWidth = {-100, 50, 50, 50, -100,};
+    private final BookOverviewGui thisBookOverviewGui = this;
+    private JFrame bookOverviewFrame;
     private Object[][] bookMenuData;
     private JMenuBar bookOverviewMenuBar;
     private JTable bookOverviewTable;
-    private JTextField searchField;
+    private JTextField bookOverviewSearchField;
     private ArrayList<Book> books;
-    private List<Order> orders;
-
-    BookOverviewGui thisBookOverviewGui = this;
 
     public BookOverviewGui(ArrayList <Book> books) {
         this.books = books;
@@ -47,7 +43,6 @@ public class BookOverviewGui implements ActionListener {
         if (books == null) {
             books = new ArrayList<>();
         }
-
         bookMenuData = new Object[books.size()][columnNames.length];
 
         for (int selectedBook = 0; selectedBook < books.size(); selectedBook++) {
@@ -58,6 +53,7 @@ public class BookOverviewGui implements ActionListener {
             bookMenuData[selectedBook][4] = books.get(selectedBook).getQty();
         }
     }
+
     private void createBookOverviewFrame() {
         bookOverviewFrame = new JFrame("Book Overview");
         bookOverviewFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -85,18 +81,6 @@ public class BookOverviewGui implements ActionListener {
         menu.add(bookOverviewItem);
     }
 
-    public void actionPerformed(ActionEvent e) {
-        if ("AccountGui".equals(e.getActionCommand())) {
-            System.out.println("Launching Account GUI");
-            new AccountGui();
-        } else if ("PersonalBooksGui".equals(e.getActionCommand())) {
-            new PersonalBooksGui(orders, books, thisBookOverviewGui);
-        } else if ("Logout".equals(e.getActionCommand())) {
-            new MainGui();
-        }
-    }
-
-
     private void createBookOverviewTable() {
         bookOverviewTable = new JTable(bookMenuData, columnNames) {
             @Override
@@ -104,39 +88,34 @@ public class BookOverviewGui implements ActionListener {
                 return false;
             }
         };
-
         TableColumnModel columnModel = bookOverviewTable.getColumnModel();
 
         for (int selectedColumn = 0; selectedColumn < columnWidth.length; selectedColumn++) {
             TableColumn column = columnModel.getColumn(selectedColumn);
             column.setPreferredWidth((column.getPreferredWidth() + columnWidth[selectedColumn]));
         }
-
         addMouseListener();
     }
 
-private void addMouseListener() {
-    bookOverviewTable.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            if (e.getClickCount() == 1) {
-                JTable target = (JTable) e.getSource();
-                int viewRow = target.getSelectedRow();
-                if (viewRow != -1) {
-                    int modelRow = target.convertRowIndexToModel(viewRow);
-                    int id = Integer.parseInt(target.getModel().getValueAt(modelRow, 0).toString());
-                    Book selectedBook = findBookById(id);
-                    if (selectedBook != null) {
-                        new DetailedBookView(selectedBook, thisBookOverviewGui);
-                    } else {
-                        System.out.println("No book found with ID: " + id);
+    private void addMouseListener() {
+        bookOverviewTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 1) {
+                    JTable target = (JTable) e.getSource();
+                    int viewRow = target.getSelectedRow();
+                    if (viewRow != -1) {
+                        int modelRow = target.convertRowIndexToModel(viewRow);
+                        int id = Integer.parseInt(target.getModel().getValueAt(modelRow, 0).toString());
+                        Book selectedBook = findBookById(id);
+                        if (selectedBook != null) {
+                            new DetailedBookView(selectedBook, thisBookOverviewGui);
+                        }
                     }
                 }
             }
-        }
-    });
-}
-
+        });
+    }
 
     private Book findBookById(int id) {
         for (Book book : books) {
@@ -147,28 +126,27 @@ private void addMouseListener() {
         return null;
     }
 
-
     private void createBookOverviewSearchBar() {
-        JPanel panel = new JPanel();
+        JPanel BookOverviewGuiPanel = new JPanel();
         createSearchField();
-        panel.add(searchField);
-        bookOverviewFrame.add(panel, BorderLayout.NORTH);
+        BookOverviewGuiPanel.add(bookOverviewSearchField);
+        bookOverviewFrame.add(BookOverviewGuiPanel, BorderLayout.NORTH);
     }
 
     private void createSearchField() {
-        searchField = new JTextField(15);
-        searchField.getDocument().addDocumentListener(new DocumentListener() {
+        bookOverviewSearchField = new JTextField(15);
+        bookOverviewSearchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                filterTable(searchField.getText());
+                filterTable(bookOverviewSearchField.getText());
             }
             @Override
             public void removeUpdate(DocumentEvent e) {
-                filterTable(searchField.getText());
+                filterTable(bookOverviewSearchField.getText());
             }
             @Override
             public void changedUpdate(DocumentEvent e) {
-                filterTable(searchField.getText());
+                filterTable(bookOverviewSearchField.getText());
             }
         });
     }
@@ -182,26 +160,31 @@ private void addMouseListener() {
         ((TableRowSorter<? extends TableModel>) sorter).setRowFilter(RowFilter.regexFilter("(?i)" + searchText));
     }
 
+    public void actionPerformed(ActionEvent e) {
+        if ("AccountGui".equals(e.getActionCommand())) {
+            new AccountGui();
+        } else if ("PersonalBooksGui".equals(e.getActionCommand())) {
+            new PersonalBooksGui(books, thisBookOverviewGui);
+        } else if ("Logout".equals(e.getActionCommand())) {
+            new MainGui();
+        }
+    }
+
     public void refreshBooks() {
-        // Fetch new books data
         this.books = Manager.getBooks();
         initializeBookOverviewData(books);
 
-        // Clear existing data in the JTable
         for (int i = 0; i < bookOverviewTable.getRowCount(); i++) {
             for (int j = 0; j < bookOverviewTable.getColumnCount(); j++) {
                 bookOverviewTable.setValueAt(null, i, j);
             }
         }
 
-        // Update the JTable with new data
         for (int i = 0; i < bookMenuData.length; i++) {
             for (int j = 0; j < bookMenuData[i].length; j++) {
                 bookOverviewTable.setValueAt(bookMenuData[i][j], i, j);
             }
         }
-
-        // Repaint the table to reflect changes
         ((AbstractTableModel) bookOverviewTable.getModel()).fireTableDataChanged();
     }
 }
