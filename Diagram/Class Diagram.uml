@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>C:/Users/timbo/IdeaProjects/ProgEx</OriginalElement>
+  <nodes>
+    <node x="-482.29675360710326" y="3066.170921198668">DataStructure.BookAdministration</node>
+    <node x="171.09739178690347" y="1821.8823529411761">Main.main</node>
+    <node x="-165.39178690344033" y="3207.7891231964486">Frontend.DetailedBookView</node>
+    <node x="-990.201720310766" y="2678.8103496115427">Backend.Manager</node>
+    <node x="298.6992230854603" y="3207.7891231964486">Frontend.PersonalBooksGui</node>
+    <node x="-990.201720310766" y="1821.8823529411761">Backend.LendBook</node>
+    <node x="129.6992230854603" y="2598.5660377358495">Frontend.BookOverviewGui</node>
+    <node x="158.6992230854603" y="2013.3429522752501">Frontend.MainGui</node>
+    <node x="-990.201720310766" y="2193.2583240843496">Backend.BookIsNotExtendableException</node>
+    <node x="439.6992230854603" y="1821.8823529411761">Frontend.GuiLoginGui</node>
+    <node x="-990.201720310766" y="2133.5703385127626">Backend.BookUnavailableException</node>
+    <node x="-990.201720310766" y="2265.086570477247">Backend.LoginBackend</node>
+    <node x="153.6992230854603" y="3625.0122086570477">Frontend.AccountGui</node>
+    <node x="-990.201720310766" y="2501.6084905660373">Backend.DataProcessor</node>
+    <node x="-990.201720310766" y="3025.0122086570477">DataStructure.Customer</node>
+    <node x="-490.55216426193124" y="1821.8823529411761">Backend.DatabaseConnection</node>
+    <node x="-490.55216426193124" y="2602.382352941176">DataStructure.Order</node>
+    <node x="-165.39178690344033" y="2600.5818534961154">DataStructure.Book</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="Frontend.PersonalBooksGui" target="DataStructure.Customer" relationship="TO_ONE">
+      <point x="0.0" y="164.0" />
+      <point x="440.6992230854603" y="3577.2891231964486" />
+      <point x="220.5" y="172.27691453940088" />
+    </edge>
+    <edge source="Backend.Manager" target="Backend.DataProcessor" relationship="TO_ONE">
+      <point x="30.0" y="-140.0" />
+      <point x="0.0" y="55.5" />
+    </edge>
+    <edge source="Backend.Manager" target="DataStructure.BookAdministration" relationship="TO_ONE">
+      <point x="147.0" y="129.0720033296334" />
+      <point x="-357.29675360710326" y="2947.882352941176" />
+      <point x="0.0" y="-68.0" />
+    </edge>
+    <edge source="Frontend.BookOverviewGui" target="DataStructure.Book" relationship="TO_MANY">
+      <point x="-226.5" y="-21.984184239734077" />
+      <point x="95.5" y="0.0" />
+    </edge>
+    <edge source="Frontend.PersonalBooksGui" target="DataStructure.Book" relationship="TO_MANY">
+      <point x="-15.0" y="-164.0" />
+      <point x="425.6992230854603" y="3175.0660377358495" />
+      <point x="-54.891786903440334" y="3175.0660377358495" />
+      <point x="15.0" y="248.0" />
+    </edge>
+    <edge source="Backend.LoginBackend" target="Backend.DatabaseConnection" relationship="TO_ONE">
+      <point x="207.5" y="0.0" />
+      <point x="-288.5" y="155.2042175360707" />
+    </edge>
+    <edge source="Frontend.MainGui" target="DataStructure.Book" relationship="TO_MANY">
+      <point x="0.0" y="260.0" />
+      <point x="370.6992230854603" y="2575.382352941176" />
+      <point x="-69.89178690344033" y="2575.382352941176" />
+      <point x="0.0" y="-248.0" />
+    </edge>
+    <edge source="DataStructure.Order" target="DataStructure.Book" relationship="TO_ONE">
+      <point x="104.0" y="97.19964705882376" />
+      <point x="-95.5" y="15.00014650388448" />
+    </edge>
+    <edge source="DataStructure.BookAdministration" target="DataStructure.Book" relationship="TO_MANY">
+      <point x="125.0" y="-45.08906770255271" />
+      <point x="-95.5" y="240.5" />
+    </edge>
+    <edge source="DataStructure.Customer" target="DataStructure.Order" relationship="TO_MANY">
+      <point x="220.5" y="-356.3412874583796" />
+      <point x="-563.3769422863486" y="3048.670921198668" />
+      <point x="-563.3769422863486" y="2882.367369589345" />
+      <point x="-386.55216426193124" y="2882.367369589345" />
+      <point x="0.0" y="164.0" />
+    </edge>
+    <edge source="Frontend.PersonalBooksGui" target="Frontend.BookOverviewGui" relationship="TO_ONE">
+      <point x="0.0" y="-164.0" />
+      <point x="84.5" y="272.0" />
+    </edge>
+    <edge source="Frontend.DetailedBookView" target="Frontend.BookOverviewGui" relationship="TO_ONE">
+      <point x="121.09100998890062" y="-176.0" />
+      <point x="-219.0" y="272.0" />
+    </edge>
+    <edge source="Backend.Manager" target="DataStructure.Customer" relationship="TO_ONE">
+      <point x="-15.0" y="140.0" />
+      <point x="-88.5" y="-380.0" />
+    </edge>
+    <edge source="Backend.Manager" target="Backend.DatabaseConnection" relationship="TO_ONE">
+      <point x="147.0" y="0.0" />
+      <point x="-603.701720310766" y="2818.8103496115427" />
+      <point x="-603.701720310766" y="2509.1084905660373" />
+      <point x="-288.5" y="319.22613762486117" />
+    </edge>
+    <edge source="Backend.LendBook" target="Backend.DatabaseConnection" relationship="TO_ONE">
+      <point x="162.5" y="0.0" />
+      <point x="-288.5" y="-228.0" />
+    </edge>
+    <edge source="Frontend.DetailedBookView" target="DataStructure.Book" relationship="TO_ONE">
+      <point x="-86.0" y="-176.0" />
+      <point x="0.0" y="248.0" />
+    </edge>
+    <edge source="Frontend.AccountGui" target="DataStructure.Customer" relationship="TO_ONE">
+      <point x="-214.5" y="0.0" />
+      <point x="220.5" y="300.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="0.4129239230064161" showDependencies="true" x="-323.49999999999955" y="2886.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
