@@ -52,10 +52,16 @@ public class Manager {
      *
      * @throws SQLException
      */
-    public static void loadPersonalBooks() throws SQLException {
+    public static boolean loadPersonalBooks() throws SQLException  {
+
+        if(user == null){
+            return false;
+        }
+
         int id = user.getId();
         ArrayList<Order> orders = DataProcessor.proccesUserOrders(dbConn.executeQueryPrepared(dbConn.prepareWith1Int(DatabaseConnection.getCommand(DatabaseConnection.Command.GetBooksFromUser), id)));
         user.setOrders(orders);
+        return true;
     }
 
     /**
@@ -66,12 +72,13 @@ public class Manager {
      */
     public static boolean setUser(Customer customer) {
         user = customer;
+        boolean b = false;
         try {
-            loadPersonalBooks();
+           b = loadPersonalBooks();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return customer != null;
+        return b;
     }
 
     public static Customer getUser() {
