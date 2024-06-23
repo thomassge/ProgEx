@@ -194,7 +194,7 @@ public class MainGui {
         pattern = Pattern.compile(birthdayRegex);
         matcher = pattern.matcher(birthdayTextField.getText());
         if (!matcher.matches()) {
-            JOptionPane.showMessageDialog(null, "Please enter a valid birthday (dd.mm.yyyy).", "Input Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Please enter a valid birthday (YYYY-MM-DD).", "Input Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         return true;

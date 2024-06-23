@@ -24,7 +24,7 @@ public class LendBook {
      */
     public static void lendBook(Book book) throws BookUnavailableException {
         if (book.getQty() < 1) {
-            throw new BookUnavailableException("Das Buch ist nicht verfügbar.");
+            throw new BookUnavailableException("The book is currently not available.");
         } else {
             int bookID = book.getId();
             int customerID = Manager.getUser().getId();
