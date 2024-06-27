@@ -52,14 +52,14 @@ public class Manager {
      *
      * @throws SQLException
      */
-    public static boolean loadPersonalBooks() throws SQLException  {
+    public static boolean loadPersonalBooks() throws SQLException {
 
-        if(user == null){
+        if (user == null) {
             return false;
         }
 
         int id = user.getId();
-        ArrayList<Order> orders = DataProcessor.proccesUserOrders(dbConn.executeQueryPrepared(dbConn.prepareWith1Int(DatabaseConnection.getCommand(DatabaseConnection.Command.GetBooksFromUser), id)));
+        ArrayList<Order> orders = DataProcessor.processUserOrders(dbConn.executeQueryPrepared(dbConn.prepareWith1Int(DatabaseConnection.getCommand(DatabaseConnection.Command.GetBooksFromUser), id)));
         user.setOrders(orders);
         return true;
     }
@@ -74,7 +74,7 @@ public class Manager {
         user = customer;
         boolean b = false;
         try {
-           b = loadPersonalBooks();
+            b = loadPersonalBooks();
         } catch (SQLException e) {
             e.printStackTrace();
         }

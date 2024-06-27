@@ -285,6 +285,15 @@ public class DatabaseConnection {
      * An enum that provides all executable sql commands to prevent unwanted sql commands from being executed.
      */
     public enum Command {
-        GetAllBooks, CreateAccount, DeleteAccount, EditAccount, GetUserName, GetUserEmail, GetUserPassword, GetCustomer, GetBooksFromUser, GetBookTitle, GetBookISBN, GetSearchGenre, GetSearchAuthor, GetSearchReleaseDate, GetAvailableBooks, GetQuantityBooks, InsertLentBook, UpdateLentBook, RemoveLentBook, UpdateBookQty,
+        GetAllBooks,
+        CreateAccount,
+        DeleteAccount,
+        EditAccount,
+        GetCustomer,
+        GetBooksFromUser,
+        InsertLentBook,
+        UpdateLentBook,
+        RemoveLentBook,
+        UpdateBookQty,
     }
 }

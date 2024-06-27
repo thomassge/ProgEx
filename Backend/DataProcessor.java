@@ -21,7 +21,7 @@ public class DataProcessor {
      * @return a list of orders
      * @throws SQLException
      */
-    public static ArrayList<Order> proccesUserOrders(ResultSet rs) throws SQLException {
+    public static ArrayList<Order> processUserOrders(ResultSet rs) throws SQLException {
         ArrayList<Order> orders = new ArrayList<Order>();
 
         while (rs.next()) {
