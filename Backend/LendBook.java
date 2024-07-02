@@ -67,7 +67,7 @@ public class LendBook {
         //java.util.Date utilExtendingDate = new java.util.Date(extendingDate.getTime());
 
         if (!isBookExtendable(utilLendingDate, extendingDate)) {
-            throw new BookIsNotExtendableException("Das Buch kann nicht verlängert werden.");
+            throw new BookIsNotExtendableException("The maximum extension time has been reached.");
         } else {
             updateLentBookInDB(bookingId, extendingDate);
             try {
@@ -128,7 +128,8 @@ public class LendBook {
     public static void updateLentBookInDB(int bookingId, java.util.Date extendingDate) {
         try {
             java.sql.Date sqlExtendingDate = new java.sql.Date(extendingDate.getTime());
-            PreparedStatement stmt = dbConn.updateLentBooksInDatabase(DatabaseConnection.getCommand(DatabaseConnection.Command.UpdateLentBook), bookingId, sqlExtendingDate);
+            PreparedStatement stmt = dbConn.updateLentBooksInDatabase(DatabaseConnection.getCommand(
+                                     DatabaseConnection.Command.UpdateLentBook), bookingId, sqlExtendingDate);
             dbConn.executeQueryPreparedUpdate(stmt);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -142,7 +143,8 @@ public class LendBook {
      */
     public static void removeLentBookInDB(int bookingId) {
         try {
-            PreparedStatement stmt = dbConn.removeLentBookFromDatabase(DatabaseConnection.getCommand(DatabaseConnection.Command.RemoveLentBook), bookingId);
+            PreparedStatement stmt = dbConn.removeLentBookFromDatabase(DatabaseConnection.getCommand(
+                                     DatabaseConnection.Command.RemoveLentBook), bookingId);
             dbConn.executeQueryPreparedUpdate(stmt);
         } catch (SQLException e) {
             e.printStackTrace();
