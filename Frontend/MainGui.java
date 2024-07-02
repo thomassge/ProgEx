@@ -217,7 +217,7 @@ public class MainGui {
             case "delete":
                 if(LoginBackend.checkLogin(email, password)) {
                     LoginBackend.deleteAccount(email, password);
-                    deleteFrame.dispose();
+                    frame.dispose();
                 } else {
                     JOptionPane.showMessageDialog(null, "Delete failed. Please check your credentials and try again.", "Delete Failed", JOptionPane.ERROR_MESSAGE);
                 }
